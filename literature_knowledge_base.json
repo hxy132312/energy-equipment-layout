@@ -1,0 +1,3351 @@
+[
+  {
+    "id": "KB-001",
+    "title": "中国石化页岩气电动压裂技术现状及发展建议",
+    "source": "石油钻探技术, DOI: 10.11911/syztjs.2022100",
+    "year": "2023",
+    "type": "论文",
+    "keywords": [
+      "页岩气",
+      "电动压裂",
+      "井场布置",
+      "供砂作业区",
+      "高压管汇"
+    ],
+    "layout_rules": [
+      {
+        "rule": "井场布置区域可划分为供砂、压裂、测井及配液等作业区。",
+        "equipment": [
+          "砂罐",
+          "压裂泵车",
+          "仪表车",
+          "水罐",
+          "化添撬"
+        ],
+        "constraint_type": "流程顺序",
+        "value": "",
+        "evidence": "公开摘要明确提出井场布置区域主要包括供砂、压裂、测井及配液等作业区。",
+        "confidence": "high"
+      },
+      {
+        "rule": "供砂作业区应靠近井场进出口，便于物料装卸及车辆出入。",
+        "equipment": [
+          "砂罐",
+          "道路"
+        ],
+        "constraint_type": "道路通达",
+        "value": "定性原则",
+        "evidence": "文章摘要明确给出供砂作业区靠近井场进出口的布置优化原则。",
+        "confidence": "high"
+      },
+      {
+        "rule": "压裂作业区应优化高压管汇走向，系统可转化为管线总长、转弯和穿越惩罚。",
+        "equipment": [
+          "管汇",
+          "压裂泵车",
+          "井口"
+        ],
+        "constraint_type": "管线长度",
+        "value": "定性原则",
+        "evidence": "文章摘要提出压裂作业区应优化高压管汇走向。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "规则约束",
+      "多目标评分",
+      "井场分区"
+    ],
+    "applicable_scenarios": [
+      "页岩气平台",
+      "大型压裂",
+      "电动压裂"
+    ],
+    "citation": "刘红磊, 周林波, 陈作, 等. 中国石化页岩气电动压裂技术现状及发展建议[J]. 石油钻探技术, 2023, 51(1): 62-68.",
+    "url_or_doi": "https://doi.org/10.11911/syztjs.2022100"
+  },
+  {
+    "id": "KB-002",
+    "title": "Occupational Safety and Health for Oil and Gas Well Drilling and Servicing Operations",
+    "source": "API Recommended Practice 54, 4th Edition",
+    "year": "2019",
+    "type": "规范",
+    "keywords": [
+      "API RP 54",
+      "wellsite safety",
+      "risk assessment",
+      "flowback",
+      "special services"
+    ],
+    "layout_rules": [
+      {
+        "rule": "井场布局应纳入设施和现场过程危害评估，压裂等特种作业应控制人员暴露于高压、流体返排和设备运动风险。",
+        "equipment": [
+          "井口",
+          "管汇",
+          "压裂泵车",
+          "仪表车",
+          "道路"
+        ],
+        "constraint_type": "危险区划分",
+        "value": "定性原则",
+        "evidence": "API 页面说明 RP 54 适用于钻井、修井和现场特种服务，并新增/修订现场过程危害评估和风险缓解要求。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "风险约束",
+      "HSE 审查"
+    ],
+    "applicable_scenarios": [
+      "常规油气井",
+      "页岩气平台",
+      "井下作业",
+      "压裂特种服务"
+    ],
+    "citation": "American Petroleum Institute. Recommended Practice 54: Occupational Safety and Health for Oil and Gas Well Drilling and Servicing Operations, 4th ed.",
+    "url_or_doi": "https://www.api.org/products-and-services/standards/important-standards-announcements/recommended-practice-54"
+  },
+  {
+    "id": "KB-003",
+    "title": "Oil and Gas Extraction: Hydraulic Fracturing Hazards",
+    "source": "OSHA",
+    "year": "2026",
+    "type": "规范",
+    "keywords": [
+      "OSHA",
+      "hydraulic fracturing",
+      "high-pressure lines",
+      "vehicle traffic",
+      "silica"
+    ],
+    "layout_rules": [
+      {
+        "rule": "高压管线和压力意外释放是压裂现场重点危害，人员活动区和仪表控制区应与高压管线密集区分离。",
+        "equipment": [
+          "管汇",
+          "压裂泵车",
+          "井口",
+          "仪表车"
+        ],
+        "constraint_type": "安全距离",
+        "value": "定性原则",
+        "evidence": "OSHA 将高压管线击打、意外释压列为压裂现场安全危害。",
+        "confidence": "high"
+      },
+      {
+        "rule": "现场车辆交通会产生安全与粉尘暴露风险，布置应减少车辆交叉、倒车和砂料运输穿越高压核心区。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "混砂车",
+          "压裂泵车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "定性原则",
+        "evidence": "OSHA 将移动设备/车辆事故和现场车辆交通产生的硅尘列为压裂作业关注风险。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "安全风险惩罚",
+      "交通流线优化"
+    ],
+    "applicable_scenarios": [
+      "压裂施工现场",
+      "大型压裂",
+      "砂料作业区"
+    ],
+    "citation": "Occupational Safety and Health Administration. Oil and Gas Extraction: Hydraulic Fracturing.",
+    "url_or_doi": "https://www.osha.gov/taxonomy/term/67564"
+  },
+  {
+    "id": "KB-004",
+    "title": "Managing Environmental Aspects Associated with Exploration and Production Operations Including Hydraulic Fracturing",
+    "source": "API RP 100-2",
+    "year": "2015",
+    "type": "规范",
+    "keywords": [
+      "hydraulic fracturing",
+      "environmental management",
+      "drainage",
+      "containment",
+      "BMP"
+    ],
+    "layout_rules": [
+      {
+        "rule": "井场布置应考虑排水流向、围控/防渗和响应设备位置，形成禁布区或环境敏感区避让。",
+        "equipment": [
+          "禁布区",
+          "道路",
+          "水罐",
+          "化添撬"
+        ],
+        "constraint_type": "禁布区",
+        "value": "定性原则",
+        "evidence": "API RP 100-2 摘要页提出应检查井场或设施周边排水形态，并按需设置围控、BMP、屏障或响应设备。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "环境约束",
+      "禁布区避让"
+    ],
+    "applicable_scenarios": [
+      "压裂井场",
+      "陆上油气开发"
+    ],
+    "citation": "American Petroleum Institute. API RP 100-2: Managing Environmental Aspects Associated with Exploration and Production Operations Including Hydraulic Fracturing.",
+    "url_or_doi": "https://www.api.org/-/media/files/policy/exploration/100-2_e1.pdf"
+  },
+  {
+    "id": "KB-005",
+    "title": "Hydraulic Fracturing Operations: Well Construction and Integrity Guidelines",
+    "source": "API HF1",
+    "year": "2009",
+    "type": "规范",
+    "keywords": [
+      "hydraulic fracturing",
+      "well integrity",
+      "well construction",
+      "pressure containment"
+    ],
+    "layout_rules": [
+      {
+        "rule": "井口和高压系统布置应服务井筒完整性、试压和压力控制，系统中作为高压核心区处理。",
+        "equipment": [
+          "井口",
+          "管汇",
+          "压裂泵车"
+        ],
+        "constraint_type": "安全距离",
+        "value": "定性原则",
+        "evidence": "API HF1 关注压裂井建井完整性、压力 containment 和压裂作业正确执行。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "压力核心分区",
+      "风险约束"
+    ],
+    "applicable_scenarios": [
+      "水力压裂井",
+      "常规油气井",
+      "页岩气井"
+    ],
+    "citation": "American Petroleum Institute. Hydraulic Fracturing Operations: Well Construction and Integrity Guidelines, 1st ed., 2009.",
+    "url_or_doi": "https://mde.maryland.gov/programs/Land/mining/marcellus/Documents/API_Standard_HF1.pdf"
+  },
+  {
+    "id": "KB-006",
+    "title": "陆上石油天然气开发业环境、健康与安全指南",
+    "source": "IFC / World Bank Group EHS Guidelines",
+    "year": "2007",
+    "type": "规范",
+    "keywords": [
+      "EHS",
+      "onshore oil and gas",
+      "emergency response",
+      "escape route"
+    ],
+    "layout_rules": [
+      {
+        "rule": "井场应设置清晰逃生路线、备用逃生路线和安全避难/集合区域。",
+        "equipment": [
+          "道路",
+          "消防应急区",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "定性原则",
+        "evidence": "IFC EHS 指南要求制定便于快速疏散至安全避难地点的逃生路线，并清楚标注和提供备用逃生路线。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "应急疏散路径",
+      "道路可达性评分"
+    ],
+    "applicable_scenarios": [
+      "陆上油气开发",
+      "压裂井场",
+      "井场应急管理"
+    ],
+    "citation": "IFC. Environmental, Health, and Safety Guidelines for Onshore Oil and Gas Development. World Bank Group, 2007.",
+    "url_or_doi": "https://www.ifc.org/content/dam/ifc/doc/2000/2007-onshore-oil-gas-development-ehs-guidelines-cn.pdf"
+  },
+  {
+    "id": "KB-007",
+    "title": "石油天然气安全规程",
+    "source": "AQ 2012-2007, 全国标准信息公共服务平台",
+    "year": "2007",
+    "type": "标准",
+    "keywords": [
+      "AQ 2012-2007",
+      "石油天然气安全",
+      "危险区域",
+      "逃生路线",
+      "紧急集合点"
+    ],
+    "layout_rules": [
+      {
+        "rule": "井场应设置危险区域、逃生路线、紧急集合点和两个以上逃生出口。",
+        "equipment": [
+          "道路",
+          "消防应急区",
+          "井口",
+          "仪表车"
+        ],
+        "constraint_type": "危险区划分",
+        "value": "两个以上逃生出口",
+        "evidence": "检索到的标准摘要/条文摘录包含井场危险区域、逃生路线、紧急集合点和两个以上逃生出口要求。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "危险区图层",
+      "应急通道约束"
+    ],
+    "applicable_scenarios": [
+      "陆上石油天然气作业",
+      "井场 HSE"
+    ],
+    "citation": "AQ 2012-2007. 石油天然气安全规程[S]. 2007.",
+    "url_or_doi": "https://std.samr.gov.cn/hb/search/stdHBDetailed?id=8B1827F1931DBB19E05397BE0A0AB44A"
+  },
+  {
+    "id": "KB-008",
+    "title": "石油天然气工程设计防火规范",
+    "source": "GB 50183-2015",
+    "year": "2015",
+    "type": "标准",
+    "keywords": [
+      "GB 50183",
+      "防火间距",
+      "站场布置",
+      "消防"
+    ],
+    "layout_rules": [
+      {
+        "rule": "防火距离、消防通道和周边设施距离应由项目设计规范核定；原型仅将消防和高风险设施分区作为推荐约束。",
+        "equipment": [
+          "消防应急区",
+          "井口",
+          "电源",
+          "道路"
+        ],
+        "constraint_type": "安全距离",
+        "value": "按项目站场等级和规范表格核定",
+        "evidence": "GB 50183 是石油天然气工程防火设计基础规范；公开摘要涉及站场区域布置和防火间距。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "防火间距校核",
+      "消防通道约束"
+    ],
+    "applicable_scenarios": [
+      "油气站场",
+      "井场消防设计"
+    ],
+    "citation": "GB 50183-2015. 石油天然气工程设计防火规范[S].",
+    "url_or_doi": "https://openstd.samr.gov.cn/"
+  },
+  {
+    "id": "KB-009",
+    "title": "页岩气井 CO2 及滑溜水混合压裂工艺",
+    "source": "CN103924955B",
+    "year": "2017",
+    "type": "专利",
+    "keywords": [
+      "页岩气",
+      "CO2压裂",
+      "压裂工艺",
+      "管汇",
+      "混砂车"
+    ],
+    "layout_rules": [
+      {
+        "rule": "常规水基/滑溜水流程可抽象为储液罐群/低压管汇 -> 混砂车 -> 压裂车 -> 高压管汇 -> 井口。",
+        "equipment": [
+          "水罐",
+          "砂罐",
+          "混砂车",
+          "压裂泵车",
+          "管汇",
+          "井口"
+        ],
+        "constraint_type": "流程顺序",
+        "value": "定性流程链",
+        "evidence": "专利步骤描述储液罐群、低压管汇、混砂车、压裂车、高压管汇依次与井口导通。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "流程网络建模",
+      "管线长度最小化"
+    ],
+    "applicable_scenarios": [
+      "页岩气压裂",
+      "混合压裂",
+      "工程案例"
+    ],
+    "citation": "CN103924955B. 一种页岩气井 CO2 及滑溜水混合压裂工艺[P].",
+    "url_or_doi": "https://patents.google.com/patent/CN103924955B/zh"
+  },
+  {
+    "id": "KB-010",
+    "title": "井场施工方法及装置",
+    "source": "CN112983375A",
+    "year": "2021",
+    "type": "专利",
+    "keywords": [
+      "井场施工",
+      "同步施工",
+      "压裂设备",
+      "最小间距",
+      "附加安全距离"
+    ],
+    "layout_rules": [
+      {
+        "rule": "钻井施工区和压裂施工区可用设备尺寸、压裂占用角和附加安全距离计算最小间距；该类距离应作为项目参数而非固定通用值。",
+        "equipment": [
+          "井口",
+          "压裂泵车",
+          "道路"
+        ],
+        "constraint_type": "安全距离",
+        "value": "公式化项目参数",
+        "evidence": "专利公开了基于预设最小间距、附加安全距离和设备尺寸的井场同步施工布置思路。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "参数化约束",
+      "空间占用角",
+      "最小间距计算"
+    ],
+    "applicable_scenarios": [
+      "多井平台",
+      "拉链式压裂",
+      "钻压同步施工"
+    ],
+    "citation": "CN112983375A. 井场施工方法及装置[P].",
+    "url_or_doi": "https://patents.google.com/patent/CN112983375A/zh"
+  },
+  {
+    "id": "KB-011",
+    "title": "A Genetic Algorithm Based Plant Layout Design Methodology Considering Piping and Safety",
+    "source": "Chemical Engineering Transactions, 52, 25-30",
+    "year": "2016",
+    "type": "论文",
+    "keywords": [
+      "plant layout",
+      "genetic algorithm",
+      "piping",
+      "safety",
+      "multi-objective"
+    ],
+    "layout_rules": [
+      {
+        "rule": "布局目标可同时最小化管线成本和安全事故经济损失，系统可转化为管线长度、安全距离、危险邻近惩罚的加权目标。",
+        "equipment": [
+          "管汇",
+          "压裂泵车",
+          "水罐",
+          "化添撬",
+          "电源"
+        ],
+        "constraint_type": "管线长度",
+        "value": "目标函数原则",
+        "evidence": "论文摘要说明同时考虑管网和爆炸等安全事故，并用遗传算法最小化管线成本和安全事故损失。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "Kruskal",
+      "多目标优化",
+      "管线成本模型"
+    ],
+    "applicable_scenarios": [
+      "工厂布局",
+      "油气设备布局类比",
+      "压裂井场算法迁移"
+    ],
+    "citation": "Wu Y., Wang Y., Feng X., Feng S. A Genetic Algorithm Based Plant Layout Design Methodology Considering Piping and Safety[J]. Chemical Engineering Transactions, 2016, 52:25-30.",
+    "url_or_doi": "https://doi.org/10.3303/CET1652005"
+  },
+  {
+    "id": "KB-012",
+    "title": "Multi-objective Construction Site Layout Planning Using Genetic Algorithms",
+    "source": "Creative Construction Conference 2016 / Procedia Engineering",
+    "year": "2016",
+    "type": "论文",
+    "keywords": [
+      "construction site layout",
+      "genetic algorithms",
+      "safety",
+      "travel distance",
+      "cost"
+    ],
+    "layout_rules": [
+      {
+        "rule": "施工现场布局可同时优化运输距离、成本和安全关系，适合将车辆通行、物料搬运和危险邻近关系纳入压裂井场评分。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "混砂车",
+          "压裂泵车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "目标函数原则",
+        "evidence": "论文摘要将总行驶距离、施工/运输成本和安全接近/远离关系纳入多目标遗传算法模型。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "多目标优化",
+      "QAP",
+      "启发式算法"
+    ],
+    "applicable_scenarios": [
+      "施工现场布局",
+      "压裂井场物流优化"
+    ],
+    "citation": "Papadaki I. N., Chassiakos A. P. Multi-objective Construction Site Layout Planning Using Genetic Algorithms[C]. Creative Construction Conference, 2016.",
+    "url_or_doi": "https://2016.creative-construction-conference.com/proceedings/CCC2016_64_Chassiakos.pdf"
+  },
+  {
+    "id": "KB-013",
+    "title": "Trade-off between Safety and Cost in Planning Construction Site Layouts",
+    "source": "Journal of Construction Engineering and Management, 131(11):1186-1195",
+    "year": "2005",
+    "type": "论文",
+    "keywords": [
+      "construction site layout",
+      "safety",
+      "cost",
+      "genetic algorithm",
+      "trade-off"
+    ],
+    "layout_rules": [
+      {
+        "rule": "布局优化不能只最小化运输成本，应把安全作为独立目标或高权重目标，支持用户选择安全优先权重。",
+        "equipment": [
+          "道路",
+          "仪表车",
+          "管汇",
+          "压裂泵车"
+        ],
+        "constraint_type": "安全距离",
+        "value": "目标函数原则",
+        "evidence": "文献摘要指出既有模型常只最小化资源移动成本，未把安全作为重要独立目标。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "安全-成本权衡",
+      "多目标优化"
+    ],
+    "applicable_scenarios": [
+      "施工现场布局",
+      "压裂井场权重配置"
+    ],
+    "citation": "El-Rayes K., Khalafallah A. Trade-off between Safety and Cost in Planning Construction Site Layouts[J]. Journal of Construction Engineering and Management, 2005, 131(11):1186-1195.",
+    "url_or_doi": "https://doi.org/10.1061/(ASCE)0733-9364(2005)131:11(1186)"
+  },
+  {
+    "id": "KB-014",
+    "title": "Intelligent hydraulic fracturing under industry 4.0—a survey and future directions",
+    "source": "Journal of Petroleum Exploration and Production Technology, 14(12): 3161-3181",
+    "year": "2024",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "14. Jia J., Fan Q., Jing J., Lei K., et al. Intelligent hydraulic fracturing under industry 4.0—a survey and future directions[J]. Journal of Petroleum Exploration and Production Technology, 14(12): 3161-3181, 2024. DOI: [10.1007/s13202-024-01877-6](https://doi.org/10.1007/s13202-024-01877-6)",
+    "url_or_doi": "https://doi.org/10.1007/s13202-024-01877-6"
+  },
+  {
+    "id": "KB-015",
+    "title": "Eco-Friendly Electric-Powered Hydraulic Fracturing Towards Shale-Gas Recovery: Efficiency, Economics and Field Application",
+    "source": "SPE International Hydraulic Fracturing Technology Conference & Exhibition",
+    "year": "2022",
+    "type": "会议论文",
+    "keywords": [
+      "电驱压裂",
+      "电源",
+      "开关柜",
+      "电缆",
+      "井场布置"
+    ],
+    "layout_rules": [
+      {
+        "rule": "电驱压裂布局需同时满足流体流程和供配电流程：泵组靠近高压管汇，发电/变压/开关设备保持检修通道并避让高压喷射核心区。",
+        "equipment": [
+          "电源",
+          "开关柜",
+          "电缆",
+          "压裂泵车",
+          "井口"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "定性原则",
+        "evidence": "来源描述电动压裂泵、现场供电、开关柜或电驱压裂系统组成。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "多流程耦合布局",
+      "电缆长度惩罚",
+      "检修通道约束"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "15. Tong Z., Kuang Y., Fan C., Li T., et al. Eco-Friendly Electric-Powered Hydraulic Fracturing Towards Shale-Gas Recovery: Efficiency, Economics and Field Application[C]. SPE International Hydraulic Fracturing Technology Conference & Exhibition, 2022. DOI: [10.2118/205282-ms](https://doi.org/10.2118/205282-ms)",
+    "url_or_doi": "https://doi.org/10.2118/205282-ms"
+  },
+  {
+    "id": "KB-016",
+    "title": "Electric Powered Hydraulic Fracturing",
+    "source": "SPE/CSUR Unconventional Resources Conference",
+    "year": "2015",
+    "type": "会议论文",
+    "keywords": [
+      "电驱压裂",
+      "电源",
+      "开关柜",
+      "电缆",
+      "井场布置"
+    ],
+    "layout_rules": [
+      {
+        "rule": "电驱压裂布局需同时满足流体流程和供配电流程：泵组靠近高压管汇，发电/变压/开关设备保持检修通道并避让高压喷射核心区。",
+        "equipment": [
+          "电源",
+          "开关柜",
+          "电缆",
+          "压裂泵车",
+          "井口"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "定性原则",
+        "evidence": "来源描述电动压裂泵、现场供电、开关柜或电驱压裂系统组成。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "多流程耦合布局",
+      "电缆长度惩罚",
+      "检修通道约束"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "16. Oehring J. M.. Electric Powered Hydraulic Fracturing[C]. SPE/CSUR Unconventional Resources Conference, 2015. DOI: [10.2118/175965-ms](https://doi.org/10.2118/175965-ms)",
+    "url_or_doi": "https://doi.org/10.2118/175965-ms"
+  },
+  {
+    "id": "KB-017",
+    "title": "Environmental Benefits of Electric Powered Hydraulic Fracturing",
+    "source": "SPE Eastern Regional Meeting",
+    "year": "2015",
+    "type": "会议论文",
+    "keywords": [
+      "电驱压裂",
+      "电源",
+      "开关柜",
+      "电缆",
+      "井场布置"
+    ],
+    "layout_rules": [
+      {
+        "rule": "电驱压裂布局需同时满足流体流程和供配电流程：泵组靠近高压管汇，发电/变压/开关设备保持检修通道并避让高压喷射核心区。",
+        "equipment": [
+          "电源",
+          "开关柜",
+          "电缆",
+          "压裂泵车",
+          "井口"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "定性原则",
+        "evidence": "来源描述电动压裂泵、现场供电、开关柜或电驱压裂系统组成。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "多流程耦合布局",
+      "电缆长度惩罚",
+      "检修通道约束"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "17. Oehring J. M.. Environmental Benefits of Electric Powered Hydraulic Fracturing[C]. SPE Eastern Regional Meeting, 2015. DOI: [10.2118/177308-ms](https://doi.org/10.2118/177308-ms)",
+    "url_or_doi": "https://doi.org/10.2118/177308-ms"
+  },
+  {
+    "id": "KB-018",
+    "title": "These Five Companies are Reinventing the US Frac Fleet",
+    "source": "Journal of Petroleum Technology, 71(08): 30-35",
+    "year": "2019",
+    "type": "论文",
+    "keywords": [
+      "电驱压裂",
+      "电源",
+      "开关柜",
+      "电缆",
+      "井场布置"
+    ],
+    "layout_rules": [
+      {
+        "rule": "电驱压裂布局需同时满足流体流程和供配电流程：泵组靠近高压管汇，发电/变压/开关设备保持检修通道并避让高压喷射核心区。",
+        "equipment": [
+          "电源",
+          "开关柜",
+          "电缆",
+          "压裂泵车",
+          "井口"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "定性原则",
+        "evidence": "来源描述电动压裂泵、现场供电、开关柜或电驱压裂系统组成。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "多流程耦合布局",
+      "电缆长度惩罚",
+      "检修通道约束"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "18. Jacobs T.. These Five Companies are Reinventing the US Frac Fleet[J]. Journal of Petroleum Technology, 71(08): 30-35, 2019. DOI: [10.2118/0819-0030-jpt](https://doi.org/10.2118/0819-0030-jpt)",
+    "url_or_doi": "https://doi.org/10.2118/0819-0030-jpt"
+  },
+  {
+    "id": "KB-019",
+    "title": "Improving Operational Efficiency Using Automated Time Analysis for Multi-Well Pad Fracturing",
+    "source": "Abu Dhabi International Petroleum Exhibition & Conference",
+    "year": "2021",
+    "type": "会议论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "19. Siddiqui F., Kamyab M., Lowder M.. Improving Operational Efficiency Using Automated Time Analysis for Multi-Well Pad Fracturing[C]. Abu Dhabi International Petroleum Exhibition & Conference, 2021. DOI: [10.2118/207318-ms](https://doi.org/10.2118/207318-ms)",
+    "url_or_doi": "https://doi.org/10.2118/207318-ms"
+  },
+  {
+    "id": "KB-020",
+    "title": "Time-Delayed Fracturing: A New Strategy in Multi-Stage, Multi-Well Pad Fracturing",
+    "source": "SPE Annual Technical Conference and Exhibition",
+    "year": "2013",
+    "type": "会议论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "20. Manchanda R., Sharma M. M.. Time-Delayed Fracturing: A New Strategy in Multi-Stage, Multi-Well Pad Fracturing[C]. SPE Annual Technical Conference and Exhibition, 2013. DOI: [10.2118/166489-ms](https://doi.org/10.2118/166489-ms)",
+    "url_or_doi": "https://doi.org/10.2118/166489-ms"
+  },
+  {
+    "id": "KB-021",
+    "title": "Combining Hydraulic Fracturing Considerations and Well Spacing Optimization for Pad Development in the Vaca Muerta Shale",
+    "source": "Proceedings of the 4th Unconventional Resources Technology Conference",
+    "year": "2016",
+    "type": "会议论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "21. Suarez M., Pichon S.. Combining Hydraulic Fracturing Considerations and Well Spacing Optimization for Pad Development in the Vaca Muerta Shale[C]. Proceedings of the 4th Unconventional Resources Technology Conference, 2016. DOI: [10.15530/urtec-2016-2436107](https://doi.org/10.15530/urtec-2016-2436107)",
+    "url_or_doi": "https://doi.org/10.15530/urtec-2016-2436107"
+  },
+  {
+    "id": "KB-022",
+    "title": "Lessons Learned From Hydraulic Fracturing the First Exploratory Shale Gas Well in Egypt",
+    "source": "SPE Asia Pacific Hydraulic Fracturing Conference",
+    "year": "2016",
+    "type": "会议论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "22. Mohamed M. S., Meguid A. A., Wang Q., El-Maghraby O.. Lessons Learned From Hydraulic Fracturing the First Exploratory Shale Gas Well in Egypt[C]. SPE Asia Pacific Hydraulic Fracturing Conference, 2016. DOI: [10.2118/181870-ms](https://doi.org/10.2118/181870-ms)",
+    "url_or_doi": "https://doi.org/10.2118/181870-ms"
+  },
+  {
+    "id": "KB-023",
+    "title": "Evaluating the Transition to Natural Gas-Powered Equipment in Hydraulic Fracturing: Challenges, Benefits, and Feasibility Analysis",
+    "source": "SPE Hydraulic Fracturing Technology Conference and Exhibition",
+    "year": "2025",
+    "type": "会议论文",
+    "keywords": [
+      "电驱压裂",
+      "电源",
+      "开关柜",
+      "电缆",
+      "井场布置"
+    ],
+    "layout_rules": [
+      {
+        "rule": "电驱压裂布局需同时满足流体流程和供配电流程：泵组靠近高压管汇，发电/变压/开关设备保持检修通道并避让高压喷射核心区。",
+        "equipment": [
+          "电源",
+          "开关柜",
+          "电缆",
+          "压裂泵车",
+          "井口"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "定性原则",
+        "evidence": "来源描述电动压裂泵、现场供电、开关柜或电驱压裂系统组成。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "多流程耦合布局",
+      "电缆长度惩罚",
+      "检修通道约束"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "23. Hollaway M., Aune R.. Evaluating the Transition to Natural Gas-Powered Equipment in Hydraulic Fracturing: Challenges, Benefits, and Feasibility Analysis[C]. SPE Hydraulic Fracturing Technology Conference and Exhibition, 2025. DOI: [10.2118/223527-ms](https://doi.org/10.2118/223527-ms)",
+    "url_or_doi": "https://doi.org/10.2118/223527-ms"
+  },
+  {
+    "id": "KB-024",
+    "title": "Well Pad Production Storage Management",
+    "source": "Unconventional Resources Technology Conference",
+    "year": "2015",
+    "type": "会议论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "24. Smart D.. Well Pad Production Storage Management[C]. Unconventional Resources Technology Conference, 2015. DOI: [10.2118/178693-ms](https://doi.org/10.2118/178693-ms)",
+    "url_or_doi": "https://doi.org/10.2118/178693-ms"
+  },
+  {
+    "id": "KB-025",
+    "title": "Multi-period reverse logistics network design for water resource management in hydraulic fracturing",
+    "source": "Applied Mathematical Modelling, 129: 612-632",
+    "year": "2024",
+    "type": "论文",
+    "keywords": [
+      "压裂用水",
+      "返排液",
+      "储液罐",
+      "环境风险",
+      "车辆运输"
+    ],
+    "layout_rules": [
+      {
+        "rule": "水源、储液、返排液和处置节点应形成闭环物流；储液区应便于车辆/管线接入，并与环境敏感区和高压核心区分离。",
+        "equipment": [
+          "水罐",
+          "返排液罐",
+          "道路",
+          "管线",
+          "禁布区"
+        ],
+        "constraint_type": "流程顺序",
+        "value": "定性原则",
+        "evidence": "来源讨论压裂水循环、现场储存、运输、回用或处置管理。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "水物流网络优化",
+      "车辆流线优化",
+      "禁布区避让"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "25. Li H., Alumur S. A.. Multi-period reverse logistics network design for water resource management in hydraulic fracturing[J]. Applied Mathematical Modelling, 129: 612-632, 2024. DOI: [10.1016/j.apm.2024.02.010](https://doi.org/10.1016/j.apm.2024.02.010)",
+    "url_or_doi": "https://doi.org/10.1016/j.apm.2024.02.010"
+  },
+  {
+    "id": "KB-026",
+    "title": "Sustainable Management of Flowback Water during Hydraulic Fracturing of Marcellus Shale for Natural Gas Production",
+    "source": "Office of Scientific and Technical Information (OSTI)",
+    "year": "2015",
+    "type": "报告/工程资料",
+    "keywords": [
+      "压裂用水",
+      "返排液",
+      "储液罐",
+      "环境风险",
+      "车辆运输"
+    ],
+    "layout_rules": [
+      {
+        "rule": "水源、储液、返排液和处置节点应形成闭环物流；储液区应便于车辆/管线接入，并与环境敏感区和高压核心区分离。",
+        "equipment": [
+          "水罐",
+          "返排液罐",
+          "道路",
+          "管线",
+          "禁布区"
+        ],
+        "constraint_type": "流程顺序",
+        "value": "定性原则",
+        "evidence": "来源讨论压裂水循环、现场储存、运输、回用或处置管理。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "水物流网络优化",
+      "车辆流线优化",
+      "禁布区避让"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "26. Vidic R.. Sustainable Management of Flowback Water during Hydraulic Fracturing of Marcellus Shale for Natural Gas Production[R]. Office of Scientific and Technical Information (OSTI), 2015. DOI: [10.2172/1183700](https://doi.org/10.2172/1183700)",
+    "url_or_doi": "https://doi.org/10.2172/1183700"
+  },
+  {
+    "id": "KB-027",
+    "title": "Water Management Challenges Associated with the Production of Shale Gas by Hydraulic Fracturing",
+    "source": "Elements, 7(3): 181-186",
+    "year": "2011",
+    "type": "论文",
+    "keywords": [
+      "压裂用水",
+      "返排液",
+      "储液罐",
+      "环境风险",
+      "车辆运输"
+    ],
+    "layout_rules": [
+      {
+        "rule": "水源、储液、返排液和处置节点应形成闭环物流；储液区应便于车辆/管线接入，并与环境敏感区和高压核心区分离。",
+        "equipment": [
+          "水罐",
+          "返排液罐",
+          "道路",
+          "管线",
+          "禁布区"
+        ],
+        "constraint_type": "流程顺序",
+        "value": "定性原则",
+        "evidence": "来源讨论压裂水循环、现场储存、运输、回用或处置管理。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "水物流网络优化",
+      "车辆流线优化",
+      "禁布区避让"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "27. Gregory K. B., Vidic R. D., Dzombak D. A.. Water Management Challenges Associated with the Production of Shale Gas by Hydraulic Fracturing[J]. Elements, 7(3): 181-186, 2011. DOI: [10.2113/gselements.7.3.181](https://doi.org/10.2113/gselements.7.3.181)",
+    "url_or_doi": "https://doi.org/10.2113/gselements.7.3.181"
+  },
+  {
+    "id": "KB-028",
+    "title": "A Critical Review of the Risks to Water Resources from Unconventional Shale Gas Development and Hydraulic Fracturing in the United States",
+    "source": "Environmental Science & Technology, 48(15): 8334-8348",
+    "year": "2014",
+    "type": "论文",
+    "keywords": [
+      "压裂用水",
+      "返排液",
+      "储液罐",
+      "环境风险",
+      "车辆运输"
+    ],
+    "layout_rules": [
+      {
+        "rule": "水源、储液、返排液和处置节点应形成闭环物流；储液区应便于车辆/管线接入，并与环境敏感区和高压核心区分离。",
+        "equipment": [
+          "水罐",
+          "返排液罐",
+          "道路",
+          "管线",
+          "禁布区"
+        ],
+        "constraint_type": "流程顺序",
+        "value": "定性原则",
+        "evidence": "来源讨论压裂水循环、现场储存、运输、回用或处置管理。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "水物流网络优化",
+      "车辆流线优化",
+      "禁布区避让"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "28. Vengosh A., Jackson R. B., Warner N., Darrah T. H., et al. A Critical Review of the Risks to Water Resources from Unconventional Shale Gas Development and Hydraulic Fracturing in the United States[J]. Environmental Science & Technology, 48(15): 8334-8348, 2014. DOI: [10.1021/es405118y](https://doi.org/10.1021/es405118y)",
+    "url_or_doi": "https://doi.org/10.1021/es405118y"
+  },
+  {
+    "id": "KB-029",
+    "title": "Impact of Shale Gas Development on Regional Water Quality",
+    "source": "Science, 340(6134)",
+    "year": "2013",
+    "type": "论文",
+    "keywords": [
+      "压裂用水",
+      "返排液",
+      "储液罐",
+      "环境风险",
+      "车辆运输"
+    ],
+    "layout_rules": [
+      {
+        "rule": "水源、储液、返排液和处置节点应形成闭环物流；储液区应便于车辆/管线接入，并与环境敏感区和高压核心区分离。",
+        "equipment": [
+          "水罐",
+          "返排液罐",
+          "道路",
+          "管线",
+          "禁布区"
+        ],
+        "constraint_type": "流程顺序",
+        "value": "定性原则",
+        "evidence": "来源讨论压裂水循环、现场储存、运输、回用或处置管理。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "水物流网络优化",
+      "车辆流线优化",
+      "禁布区避让"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "29. Vidic R. D., Brantley S. L., Vandenbossche J. M., Yoxtheimer D., et al. Impact of Shale Gas Development on Regional Water Quality[J]. Science, 340(6134), 2013. DOI: [10.1126/science.1235009](https://doi.org/10.1126/science.1235009)",
+    "url_or_doi": "https://doi.org/10.1126/science.1235009"
+  },
+  {
+    "id": "KB-030",
+    "title": "Water Footprint of Hydraulic Fracturing",
+    "source": "Environmental Science & Technology Letters, 2(10): 276-280",
+    "year": "2015",
+    "type": "论文",
+    "keywords": [
+      "压裂用水",
+      "返排液",
+      "储液罐",
+      "环境风险",
+      "车辆运输"
+    ],
+    "layout_rules": [
+      {
+        "rule": "水源、储液、返排液和处置节点应形成闭环物流；储液区应便于车辆/管线接入，并与环境敏感区和高压核心区分离。",
+        "equipment": [
+          "水罐",
+          "返排液罐",
+          "道路",
+          "管线",
+          "禁布区"
+        ],
+        "constraint_type": "流程顺序",
+        "value": "定性原则",
+        "evidence": "来源讨论压裂水循环、现场储存、运输、回用或处置管理。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "水物流网络优化",
+      "车辆流线优化",
+      "禁布区避让"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "30. Kondash A., Vengosh A.. Water Footprint of Hydraulic Fracturing[J]. Environmental Science & Technology Letters, 2(10): 276-280, 2015. DOI: [10.1021/acs.estlett.5b00211](https://doi.org/10.1021/acs.estlett.5b00211)",
+    "url_or_doi": "https://doi.org/10.1021/acs.estlett.5b00211"
+  },
+  {
+    "id": "KB-031",
+    "title": "Reducing the environmental impact of hydraulic fracturing through design optimisation of positive displacement pumps",
+    "source": "Energy, 115: 1216-1233",
+    "year": "2016",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "31. Josifovic A., Roberts J. J., Corney J., Davies B., et al. Reducing the environmental impact of hydraulic fracturing through design optimisation of positive displacement pumps[J]. Energy, 115: 1216-1233, 2016. DOI: [10.1016/j.energy.2016.09.016](https://doi.org/10.1016/j.energy.2016.09.016)",
+    "url_or_doi": "https://doi.org/10.1016/j.energy.2016.09.016"
+  },
+  {
+    "id": "KB-032",
+    "title": "A Review of Fracturing Technologies Utilized in Shale Gas Resources",
+    "source": "Emerging Technologies in Hydraulic Fracturing and Gas Flow Modelling",
+    "year": "2022",
+    "type": "专著/书章",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "32. Ben Mahmud H., Ermila M., Bennour Z., Mohamed Mahmud W.. A Review of Fracturing Technologies Utilized in Shale Gas Resources[M]. Emerging Technologies in Hydraulic Fracturing and Gas Flow Modelling, 2022. DOI: [10.5772/intechopen.92366](https://doi.org/10.5772/intechopen.92366)",
+    "url_or_doi": "https://doi.org/10.5772/intechopen.92366"
+  },
+  {
+    "id": "KB-033",
+    "title": "Hydraulic Fracturing, An Overview",
+    "source": "Hydraulic Fracturing and Well Stimulation: 1-33",
+    "year": "2019",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "33. Aminzadeh F.. Hydraulic Fracturing, An Overview[J]. Hydraulic Fracturing and Well Stimulation: 1-33, 2019. DOI: [10.1002/9781119555711.ch1](https://doi.org/10.1002/9781119555711.ch1)",
+    "url_or_doi": "https://doi.org/10.1002/9781119555711.ch1"
+  },
+  {
+    "id": "KB-034",
+    "title": "Horizontal Well Spacing and Hydraulic Fracturing Design Optimization: A Case Study on Utica‐Point Pleasant Shale Play",
+    "source": "Hydraulic Fracturing and Well Stimulation: 141-157",
+    "year": "2019",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "34. Shahkarami A., Wang G.. Horizontal Well Spacing and Hydraulic Fracturing Design Optimization: A Case Study on Utica‐Point Pleasant Shale Play[J]. Hydraulic Fracturing and Well Stimulation: 141-157, 2019. DOI: [10.1002/9781119555711.ch7](https://doi.org/10.1002/9781119555711.ch7)",
+    "url_or_doi": "https://doi.org/10.1002/9781119555711.ch7"
+  },
+  {
+    "id": "KB-035",
+    "title": "Completions and Well Spacing Optimization by Dynamic SRV Modeling for Multi-Stage Hydraulic Fracturing",
+    "source": "SPE Annual Technical Conference and Exhibition",
+    "year": "2018",
+    "type": "会议论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "35. Sen V., Min K. S., Ji L., Sullivan R.. Completions and Well Spacing Optimization by Dynamic SRV Modeling for Multi-Stage Hydraulic Fracturing[C]. SPE Annual Technical Conference and Exhibition, 2018. DOI: [10.2118/191571-ms](https://doi.org/10.2118/191571-ms)",
+    "url_or_doi": "https://doi.org/10.2118/191571-ms"
+  },
+  {
+    "id": "KB-036",
+    "title": "Numerical simulation of hydraulic fracturing optimization in multi-well and multi-layer shale gas development: Insights from inter-well interference analysis",
+    "source": "Geoenergy Science and Engineering, 250: 213825",
+    "year": "2025",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "36. Du B., Zhang F., Dontsov E., Meng K.. Numerical simulation of hydraulic fracturing optimization in multi-well and multi-layer shale gas development: Insights from inter-well interference analysis[J]. Geoenergy Science and Engineering, 250: 213825, 2025. DOI: [10.1016/j.geoen.2025.213825](https://doi.org/10.1016/j.geoen.2025.213825)",
+    "url_or_doi": "https://doi.org/10.1016/j.geoen.2025.213825"
+  },
+  {
+    "id": "KB-037",
+    "title": "Optimization of fracturing parameters in multi-layer and multi-period cube development infill well pad: A case study on a three-layer cube development well pad of Sichuan Basin, SW China",
+    "source": "Petroleum Exploration and Development, 52(3): 817-829",
+    "year": "2025",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "37. YANG H., ZHU H., LIU Y., TANG X., et al. Optimization of fracturing parameters in multi-layer and multi-period cube development infill well pad: A case study on a three-layer cube development well pad of Sichuan Basin, SW China[J]. Petroleum Exploration and Development, 52(3): 817-829, 2025. DOI: [10.1016/s1876-3804(25)60605-7](https://doi.org/10.1016/s1876-3804(25)60605-7)",
+    "url_or_doi": "https://doi.org/10.1016/s1876-3804(25)60605-7"
+  },
+  {
+    "id": "KB-038",
+    "title": "Total Water Cycle Management for Hydraulic Fracturing in Shale Gas Production",
+    "source": "ACS Symposium Series: 129-133",
+    "year": "2015",
+    "type": "专著/书章",
+    "keywords": [
+      "压裂用水",
+      "返排液",
+      "储液罐",
+      "环境风险",
+      "车辆运输"
+    ],
+    "layout_rules": [
+      {
+        "rule": "水源、储液、返排液和处置节点应形成闭环物流；储液区应便于车辆/管线接入，并与环境敏感区和高压核心区分离。",
+        "equipment": [
+          "水罐",
+          "返排液罐",
+          "道路",
+          "管线",
+          "禁布区"
+        ],
+        "constraint_type": "流程顺序",
+        "value": "定性原则",
+        "evidence": "来源讨论压裂水循环、现场储存、运输、回用或处置管理。",
+        "confidence": "medium"
+      }
+    ],
+    "optimization_methods": [
+      "水物流网络优化",
+      "车辆流线优化",
+      "禁布区避让"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "38. Piñero E.. Total Water Cycle Management for Hydraulic Fracturing in Shale Gas Production[M]. ACS Symposium Series: 129-133, 2015. DOI: [10.1021/bk-2015-1216.ch005](https://doi.org/10.1021/bk-2015-1216.ch005)",
+    "url_or_doi": "https://doi.org/10.1021/bk-2015-1216.ch005"
+  },
+  {
+    "id": "KB-039",
+    "title": "A quantitative safety risk assessment model for construction site layout planning",
+    "source": "Safety Science, 104: 246-259",
+    "year": "2018",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "39. Ning X., Qi J., Wu C.. A quantitative safety risk assessment model for construction site layout planning[J]. Safety Science, 104: 246-259, 2018. DOI: [10.1016/j.ssci.2018.01.016](https://doi.org/10.1016/j.ssci.2018.01.016)",
+    "url_or_doi": "https://doi.org/10.1016/j.ssci.2018.01.016"
+  },
+  {
+    "id": "KB-040",
+    "title": "Cost–safety trade-off in unequal-area construction site layout planning",
+    "source": "Automation in Construction, 32: 96-103",
+    "year": "2013",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "40. Ning X., Lam K. C.. Cost–safety trade-off in unequal-area construction site layout planning[J]. Automation in Construction, 32: 96-103, 2013. DOI: [10.1016/j.autcon.2013.01.011](https://doi.org/10.1016/j.autcon.2013.01.011)",
+    "url_or_doi": "https://doi.org/10.1016/j.autcon.2013.01.011"
+  },
+  {
+    "id": "KB-041",
+    "title": "Optimisation of site layout planning for multiple construction stages with safety considerations and requirements",
+    "source": "Automation in Construction, 53: 58-68",
+    "year": "2015",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "41. Huang C., Wong C.. Optimisation of site layout planning for multiple construction stages with safety considerations and requirements[J]. Automation in Construction, 53: 58-68, 2015. DOI: [10.1016/j.autcon.2015.03.005](https://doi.org/10.1016/j.autcon.2015.03.005)",
+    "url_or_doi": "https://doi.org/10.1016/j.autcon.2015.03.005"
+  },
+  {
+    "id": "KB-042",
+    "title": "Reducing noise pollution by planning construction site layout via a multi-objective optimization model",
+    "source": "Journal of Cleaner Production, 222: 218-230",
+    "year": "2019",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "42. Ning X., Qi J., Wu C., Wang W.. Reducing noise pollution by planning construction site layout via a multi-objective optimization model[J]. Journal of Cleaner Production, 222: 218-230, 2019. DOI: [10.1016/j.jclepro.2019.03.018](https://doi.org/10.1016/j.jclepro.2019.03.018)",
+    "url_or_doi": "https://doi.org/10.1016/j.jclepro.2019.03.018"
+  },
+  {
+    "id": "KB-043",
+    "title": "A multi-objective construction site layout planning problem solved through integration of location and traffic assignment models",
+    "source": "Construction Management and Economics, 38(8): 756-772",
+    "year": "2019",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "43. Hammad A. W. A.. A multi-objective construction site layout planning problem solved through integration of location and traffic assignment models[J]. Construction Management and Economics, 38(8): 756-772, 2019. DOI: [10.1080/01446193.2019.1659510](https://doi.org/10.1080/01446193.2019.1659510)",
+    "url_or_doi": "https://doi.org/10.1080/01446193.2019.1659510"
+  },
+  {
+    "id": "KB-044",
+    "title": "A multi-objective mixed integer nonlinear programming model for construction site layout planning to minimise noise pollution and transport costs",
+    "source": "Automation in Construction, 61: 73-85",
+    "year": "2016",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "44. Hammad A., Akbarnezhad A., Rey D.. A multi-objective mixed integer nonlinear programming model for construction site layout planning to minimise noise pollution and transport costs[J]. Automation in Construction, 61: 73-85, 2016. DOI: [10.1016/j.autcon.2015.10.010](https://doi.org/10.1016/j.autcon.2015.10.010)",
+    "url_or_doi": "https://doi.org/10.1016/j.autcon.2015.10.010"
+  },
+  {
+    "id": "KB-045",
+    "title": "Bilevel and multi-objective dynamic construction site layout and security planning",
+    "source": "Automation in Construction, 57: 1-16",
+    "year": "2015",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "45. Li Z., Shen W., Xu J., Lev B.. Bilevel and multi-objective dynamic construction site layout and security planning[J]. Automation in Construction, 57: 1-16, 2015. DOI: [10.1016/j.autcon.2015.04.011](https://doi.org/10.1016/j.autcon.2015.04.011)",
+    "url_or_doi": "https://doi.org/10.1016/j.autcon.2015.04.011"
+  },
+  {
+    "id": "KB-046",
+    "title": "Genetic Algorithm–Simulation Framework for Decision Making in Construction Site Layout Planning",
+    "source": "Journal of Construction Engineering and Management, 143(1)",
+    "year": "2017",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "46. RazaviAlavi S., AbouRizk S.. Genetic Algorithm–Simulation Framework for Decision Making in Construction Site Layout Planning[J]. Journal of Construction Engineering and Management, 143(1), 2017. DOI: [10.1061/(asce)co.1943-7862.0001213](https://doi.org/10.1061/(asce)co.1943-7862.0001213)",
+    "url_or_doi": "https://doi.org/10.1061/(asce)co.1943-7862.0001213"
+  },
+  {
+    "id": "KB-047",
+    "title": "Genetic algorithm optimization for dynamic construction site layout planning",
+    "source": "Organization, Technology and Management in Construction: an International Journal, 10(1): 1655-1664",
+    "year": "2018",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "47. Farmakis P. M., Chassiakos A. P.. Genetic algorithm optimization for dynamic construction site layout planning[J]. Organization, Technology and Management in Construction: an International Journal, 10(1): 1655-1664, 2018. DOI: [10.1515/otmcj-2016-0026](https://doi.org/10.1515/otmcj-2016-0026)",
+    "url_or_doi": "https://doi.org/10.1515/otmcj-2016-0026"
+  },
+  {
+    "id": "KB-048",
+    "title": "Construction Site Layout Planning: Application of Multi-Objective Particle Swarm Optimization*",
+    "source": "Teknik Dergi, 29(6): 8691-8713",
+    "year": "2018",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "48. ORAL M., BAZAATI S., AYDINLI S., ORAL E.. Construction Site Layout Planning: Application of Multi-Objective Particle Swarm Optimization*[J]. Teknik Dergi, 29(6): 8691-8713, 2018. DOI: [10.18400/tekderg.389638](https://doi.org/10.18400/tekderg.389638)",
+    "url_or_doi": "https://doi.org/10.18400/tekderg.389638"
+  },
+  {
+    "id": "KB-049",
+    "title": "Multi-Objective Dynamic Construction Site Layout Planning in Fuzzy Random Environment",
+    "source": "Automation in Construction, 27: 155-169",
+    "year": "2012",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "49. Xu J., Li Z.. Multi-Objective Dynamic Construction Site Layout Planning in Fuzzy Random Environment[J]. Automation in Construction, 27: 155-169, 2012. DOI: [10.1016/j.autcon.2012.05.017](https://doi.org/10.1016/j.autcon.2012.05.017)",
+    "url_or_doi": "https://doi.org/10.1016/j.autcon.2012.05.017"
+  },
+  {
+    "id": "KB-050",
+    "title": "Construction site layout planning using multi-objective artificial bee colony algorithm with Levy flights",
+    "source": "Automation in Construction, 38: 14-29",
+    "year": "2014",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "50. Yahya M., Saka M.. Construction site layout planning using multi-objective artificial bee colony algorithm with Levy flights[J]. Automation in Construction, 38: 14-29, 2014. DOI: [10.1016/j.autcon.2013.11.001](https://doi.org/10.1016/j.autcon.2013.11.001)",
+    "url_or_doi": "https://doi.org/10.1016/j.autcon.2013.11.001"
+  },
+  {
+    "id": "KB-051",
+    "title": "Dynamic site layout planning through minimization of total potential energy",
+    "source": "Automation in Construction, 31: 92-102",
+    "year": "2013",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "51. Andayesh M., Sadeghpour F.. Dynamic site layout planning through minimization of total potential energy[J]. Automation in Construction, 31: 92-102, 2013. DOI: [10.1016/j.autcon.2012.11.039](https://doi.org/10.1016/j.autcon.2012.11.039)",
+    "url_or_doi": "https://doi.org/10.1016/j.autcon.2012.11.039"
+  },
+  {
+    "id": "KB-052",
+    "title": "Performance of global optimization models for dynamic site layout planning of construction projects",
+    "source": "Automation in Construction, 36: 71-78",
+    "year": "2013",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "52. Said H., El-Rayes K.. Performance of global optimization models for dynamic site layout planning of construction projects[J]. Automation in Construction, 36: 71-78, 2013. DOI: [10.1016/j.autcon.2013.08.008](https://doi.org/10.1016/j.autcon.2013.08.008)",
+    "url_or_doi": "https://doi.org/10.1016/j.autcon.2013.08.008"
+  },
+  {
+    "id": "KB-053",
+    "title": "Dynamic construction site layout planning using max-min ant system",
+    "source": "Automation in Construction, 19(1): 55-65",
+    "year": "2010",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "53. Ning X., Lam K. C., Lam M. C. K.. Dynamic construction site layout planning using max-min ant system[J]. Automation in Construction, 19(1): 55-65, 2010. DOI: [10.1016/j.autcon.2009.09.002](https://doi.org/10.1016/j.autcon.2009.09.002)",
+    "url_or_doi": "https://doi.org/10.1016/j.autcon.2009.09.002"
+  },
+  {
+    "id": "KB-054",
+    "title": "Global Optimization of Dynamic Site Layout Planning in Construction Projects",
+    "source": "Construction Research Congress 2009: 846-855",
+    "year": "2009",
+    "type": "会议论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "54. El-Rayes K., Said H.. Global Optimization of Dynamic Site Layout Planning in Construction Projects[C]. Construction Research Congress 2009: 846-855, 2009. DOI: [10.1061/41020(339)86](https://doi.org/10.1061/41020(339)86)",
+    "url_or_doi": "https://doi.org/10.1061/41020(339)86"
+  },
+  {
+    "id": "KB-055",
+    "title": "Site layout planning for prefabricated components subject to dynamic and interactive constraints",
+    "source": "Automation in Construction, 126: 103693",
+    "year": "2021",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "55. Zhang H., Yu L.. Site layout planning for prefabricated components subject to dynamic and interactive constraints[J]. Automation in Construction, 126: 103693, 2021. DOI: [10.1016/j.autcon.2021.103693](https://doi.org/10.1016/j.autcon.2021.103693)",
+    "url_or_doi": "https://doi.org/10.1016/j.autcon.2021.103693"
+  },
+  {
+    "id": "KB-056",
+    "title": "Dynamic Multi-objective Construction Site Layout Planning Based on BIM",
+    "source": "KSCE Journal of Civil Engineering, 26(4): 1522-1534",
+    "year": "2022",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "56. Tao G., Feng H., Feng J., Wang T.. Dynamic Multi-objective Construction Site Layout Planning Based on BIM[J]. KSCE Journal of Civil Engineering, 26(4): 1522-1534, 2022. DOI: [10.1007/s12205-022-0708-y](https://doi.org/10.1007/s12205-022-0708-y)",
+    "url_or_doi": "https://doi.org/10.1007/s12205-022-0708-y"
+  },
+  {
+    "id": "KB-057",
+    "title": "Multi-objective Optimization for Construction Site Layout Planning Problem under Fuzzy Random Environment",
+    "source": "2014 Seventh International Joint Conference on Computational Sciences and Optimization: 641-645",
+    "year": "2014",
+    "type": "会议论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "57. Zhao S., Li Z.. Multi-objective Optimization for Construction Site Layout Planning Problem under Fuzzy Random Environment[C]. 2014 Seventh International Joint Conference on Computational Sciences and Optimization: 641-645, 2014. DOI: [10.1109/cso.2014.148](https://doi.org/10.1109/cso.2014.148)",
+    "url_or_doi": "https://doi.org/10.1109/cso.2014.148"
+  },
+  {
+    "id": "KB-058",
+    "title": "A Safety Model for Construction Site Layout Planning Using an ACO Algorithm",
+    "source": "ICCREM 2015: 28-32",
+    "year": "2015",
+    "type": "会议论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "58. Ning X., Liu W.. A Safety Model for Construction Site Layout Planning Using an ACO Algorithm[C]. ICCREM 2015: 28-32, 2015. DOI: [10.1061/9780784479377.004](https://doi.org/10.1061/9780784479377.004)",
+    "url_or_doi": "https://doi.org/10.1061/9780784479377.004"
+  },
+  {
+    "id": "KB-059",
+    "title": "A generative design-based optimization model for multi-objective construction site layout planning",
+    "source": "Engineering, Construction and Architectural Management, 32(8): 5429-5455",
+    "year": "2024",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "59. Wefki H., Salah M., Elbeltagi E., Elsheikh A., et al. A generative design-based optimization model for multi-objective construction site layout planning[J]. Engineering, Construction and Architectural Management, 32(8): 5429-5455, 2024. DOI: [10.1108/ecam-11-2023-1193](https://doi.org/10.1108/ecam-11-2023-1193)",
+    "url_or_doi": "https://doi.org/10.1108/ecam-11-2023-1193"
+  },
+  {
+    "id": "KB-060",
+    "title": "Site-Level Facilities Layout Using Genetic Algorithms",
+    "source": "Journal of Computing in Civil Engineering, 12(4): 227-231",
+    "year": "1998",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "60. Li H., Love P. E. D.. Site-Level Facilities Layout Using Genetic Algorithms[J]. Journal of Computing in Civil Engineering, 12(4): 227-231, 1998. DOI: [10.1061/(asce)0887-3801(1998)12:4(227)](https://doi.org/10.1061/(asce)0887-3801(1998)12:4(227))",
+    "url_or_doi": "https://doi.org/10.1061/(asce)0887-3801(1998)12:4(227)"
+  },
+  {
+    "id": "KB-061",
+    "title": "A tri-objective ant colony optimization based model for planning safe construction site layout",
+    "source": "Automation in Construction, 89: 1-12",
+    "year": "2018",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "61. Ning X., Qi J., Wu C., Wang W.. A tri-objective ant colony optimization based model for planning safe construction site layout[J]. Automation in Construction, 89: 1-12, 2018. DOI: [10.1016/j.autcon.2018.01.007](https://doi.org/10.1016/j.autcon.2018.01.007)",
+    "url_or_doi": "https://doi.org/10.1016/j.autcon.2018.01.007"
+  },
+  {
+    "id": "KB-062",
+    "title": "The application of the ant colony optimization algorithm to the construction site layout planning problem",
+    "source": "Construction Management and Economics, 25(4): 359-374",
+    "year": "2007",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "62. Lam K., Ning X., Ng T.. The application of the ant colony optimization algorithm to the construction site layout planning problem[J]. Construction Management and Economics, 25(4): 359-374, 2007. DOI: [10.1080/01446190600972870](https://doi.org/10.1080/01446190600972870)",
+    "url_or_doi": "https://doi.org/10.1080/01446190600972870"
+  },
+  {
+    "id": "KB-063",
+    "title": "An Improved Ant Colony Optimization Algorithm for Construction Site Layout Problems",
+    "source": "Journal of Building Construction and Planning Research, 03(04): 221-232",
+    "year": "2015",
+    "type": "论文",
+    "keywords": [
+      "施工现场布局",
+      "安全成本权衡",
+      "车辆流",
+      "动态阶段",
+      "多目标优化"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：把临设/材料堆场/通道关系映射为压裂设备区、供砂供水区和道路通行关系，同时优化运输距离、安全邻近和施工阶段变化。",
+        "equipment": [
+          "道路",
+          "砂罐",
+          "水罐",
+          "压裂泵车",
+          "仪表车"
+        ],
+        "constraint_type": "道路通达",
+        "value": "算法迁移参考",
+        "evidence": "来源研究施工现场布局的安全、成本、运输或动态阶段优化。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "蚁群算法",
+      "多目标优化",
+      "动态布局"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "63. Calis G., Yuksel O.. An Improved Ant Colony Optimization Algorithm for Construction Site Layout Problems[J]. Journal of Building Construction and Planning Research, 03(04): 221-232, 2015. DOI: [10.4236/jbcpr.2015.34022](https://doi.org/10.4236/jbcpr.2015.34022)",
+    "url_or_doi": "https://doi.org/10.4236/jbcpr.2015.34022"
+  },
+  {
+    "id": "KB-064",
+    "title": "Simulated Annealing and Genetic Algorithms for the Facility Layout Problem: A Survey",
+    "source": "Computational Optimization and Applications, 7(1): 111-126",
+    "year": "1997",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "64. Mavridou T. D., Pardalos P. M.. Simulated Annealing and Genetic Algorithms for the Facility Layout Problem: A Survey[J]. Computational Optimization and Applications, 7(1): 111-126, 1997. DOI: [10.1023/a:1008623913524](https://doi.org/10.1023/a:1008623913524)",
+    "url_or_doi": "https://doi.org/10.1023/a:1008623913524"
+  },
+  {
+    "id": "KB-065",
+    "title": "A computational study and survey of methods for the single-row facility layout problem",
+    "source": "Computational Optimization and Applications, 55(1): 1-20",
+    "year": "2012",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "65. Hungerländer P., Rendl F.. A computational study and survey of methods for the single-row facility layout problem[J]. Computational Optimization and Applications, 55(1): 1-20, 2012. DOI: [10.1007/s10589-012-9505-8](https://doi.org/10.1007/s10589-012-9505-8)",
+    "url_or_doi": "https://doi.org/10.1007/s10589-012-9505-8"
+  },
+  {
+    "id": "KB-066",
+    "title": "Simulated annealing heuristics for the dynamic facility layout problem",
+    "source": "Computers & Operations Research, 33(8): 2431-2444",
+    "year": "2006",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "66. McKendall A. R., Shang J., Kuppusamy S.. Simulated annealing heuristics for the dynamic facility layout problem[J]. Computers & Operations Research, 33(8): 2431-2444, 2006. DOI: [10.1016/j.cor.2005.02.021](https://doi.org/10.1016/j.cor.2005.02.021)",
+    "url_or_doi": "https://doi.org/10.1016/j.cor.2005.02.021"
+  },
+  {
+    "id": "KB-067",
+    "title": "A solution to the facility layout problem using simulated annealing",
+    "source": "Computers in Industry, 36(1-2): 125-132",
+    "year": "1998",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "67. Chwif L., Barretto M. R., Moscato L. A.. A solution to the facility layout problem using simulated annealing[J]. Computers in Industry, 36(1-2): 125-132, 1998. DOI: [10.1016/s0166-3615(97)00106-1](https://doi.org/10.1016/s0166-3615(97)00106-1)",
+    "url_or_doi": "https://doi.org/10.1016/s0166-3615(97)00106-1"
+  },
+  {
+    "id": "KB-068",
+    "title": "A hybrid multi-population genetic algorithm for the dynamic facility layout problem",
+    "source": "Applied Soft Computing, 24: 457-469",
+    "year": "2014",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "68. Pourvaziri H., Naderi B.. A hybrid multi-population genetic algorithm for the dynamic facility layout problem[J]. Applied Soft Computing, 24: 457-469, 2014. DOI: [10.1016/j.asoc.2014.06.051](https://doi.org/10.1016/j.asoc.2014.06.051)",
+    "url_or_doi": "https://doi.org/10.1016/j.asoc.2014.06.051"
+  },
+  {
+    "id": "KB-069",
+    "title": "A genetic algorithm for facility layout problems of different manufacturing environments",
+    "source": "Computers & Industrial Engineering, 47(2-3): 233-246",
+    "year": "2004",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "69. El-Baz M. A.. A genetic algorithm for facility layout problems of different manufacturing environments[J]. Computers & Industrial Engineering, 47(2-3): 233-246, 2004. DOI: [10.1016/j.cie.2004.07.001](https://doi.org/10.1016/j.cie.2004.07.001)",
+    "url_or_doi": "https://doi.org/10.1016/j.cie.2004.07.001"
+  },
+  {
+    "id": "KB-070",
+    "title": "A genetic algorithm for facility layout problems",
+    "source": "Computer Integrated Manufacturing Systems, 11(1-2): 113-127",
+    "year": "1998",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "70. Mak K., Wong Y., Chan F.. A genetic algorithm for facility layout problems[J]. Computer Integrated Manufacturing Systems, 11(1-2): 113-127, 1998. DOI: [10.1016/s0951-5240(98)00018-4](https://doi.org/10.1016/s0951-5240(98)00018-4)",
+    "url_or_doi": "https://doi.org/10.1016/s0951-5240(98)00018-4"
+  },
+  {
+    "id": "KB-071",
+    "title": "An improved genetic algorithm for facility layout problems having inner structure walls and passages",
+    "source": "Computers & Operations Research, 30(1): 117-138",
+    "year": "2003",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "71. Lee K. Y., Han S. N., Roh M. I.. An improved genetic algorithm for facility layout problems having inner structure walls and passages[J]. Computers & Operations Research, 30(1): 117-138, 2003. DOI: [10.1016/s0305-0548(01)00085-5](https://doi.org/10.1016/s0305-0548(01)00085-5)",
+    "url_or_doi": "https://doi.org/10.1016/s0305-0548(01)00085-5"
+  },
+  {
+    "id": "KB-072",
+    "title": "An improved genetic algorithm for multi-floor facility layout problems having inner structure walls and passages",
+    "source": "Computers & Operations Research, 32(4): 879-899",
+    "year": "2005",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "72. Lee K. Y., Roh M. I., Jeong H. S.. An improved genetic algorithm for multi-floor facility layout problems having inner structure walls and passages[J]. Computers & Operations Research, 32(4): 879-899, 2005. DOI: [10.1016/j.cor.2003.09.004](https://doi.org/10.1016/j.cor.2003.09.004)",
+    "url_or_doi": "https://doi.org/10.1016/j.cor.2003.09.004"
+  },
+  {
+    "id": "KB-073",
+    "title": "The facility layout problem: Recent and emerging trends and perspectives",
+    "source": "Journal of Manufacturing Systems, 15(5): 351-366",
+    "year": "1996",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "73. Meller R. D., Gau K. Y.. The facility layout problem: Recent and emerging trends and perspectives[J]. Journal of Manufacturing Systems, 15(5): 351-366, 1996. DOI: [10.1016/0278-6125(96)84198-7](https://doi.org/10.1016/0278-6125(96)84198-7)",
+    "url_or_doi": "https://doi.org/10.1016/0278-6125(96)84198-7"
+  },
+  {
+    "id": "KB-074",
+    "title": "An Exact Approach to the One-Dimensional Facility Layout Problem",
+    "source": "Operations Research, 56(4): 1026-1033",
+    "year": "2008",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "74. Amaral A. R. S.. An Exact Approach to the One-Dimensional Facility Layout Problem[J]. Operations Research, 56(4): 1026-1033, 2008. DOI: [10.1287/opre.1080.0548](https://doi.org/10.1287/opre.1080.0548)",
+    "url_or_doi": "https://doi.org/10.1287/opre.1080.0548"
+  },
+  {
+    "id": "KB-075",
+    "title": "A mixed-integer linear programming approach for the T-row and the multi-bay facility layout problem",
+    "source": "European Journal of Operational Research, 295(2): 443-462",
+    "year": "2021",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "75. Dahlbeck M.. A mixed-integer linear programming approach for the T-row and the multi-bay facility layout problem[J]. European Journal of Operational Research, 295(2): 443-462, 2021. DOI: [10.1016/j.ejor.2021.02.044](https://doi.org/10.1016/j.ejor.2021.02.044)",
+    "url_or_doi": "https://doi.org/10.1016/j.ejor.2021.02.044"
+  },
+  {
+    "id": "KB-076",
+    "title": "Novel integer linear programming models for the facility layout problem with fixed-size rectangular departments",
+    "source": "Computers & Operations Research, 95: 163-171",
+    "year": "2018",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "76. Feng J., Che A.. Novel integer linear programming models for the facility layout problem with fixed-size rectangular departments[J]. Computers & Operations Research, 95: 163-171, 2018. DOI: [10.1016/j.cor.2018.03.013](https://doi.org/10.1016/j.cor.2018.03.013)",
+    "url_or_doi": "https://doi.org/10.1016/j.cor.2018.03.013"
+  },
+  {
+    "id": "KB-077",
+    "title": "A Mixed Integer Linear Programming approach for a new form of facility layout problem",
+    "source": "2014 International Conference on Control, Decision and Information Technologies (CoDIT): 065-068",
+    "year": "2014",
+    "type": "会议论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "77. Zhang Y., Che A.. A Mixed Integer Linear Programming approach for a new form of facility layout problem[C]. 2014 International Conference on Control, Decision and Information Technologies (CoDIT): 065-068, 2014. DOI: [10.1109/codit.2014.6996869](https://doi.org/10.1109/codit.2014.6996869)",
+    "url_or_doi": "https://doi.org/10.1109/codit.2014.6996869"
+  },
+  {
+    "id": "KB-078",
+    "title": "Solving fuzzy robust facility layout problem equipped with cranes using MPS algorithm and modified NSGA-II",
+    "source": "Expert Systems with Applications, 210: 118402",
+    "year": "2022",
+    "type": "论文",
+    "keywords": [
+      "设施布局",
+      "多目标优化",
+      "算法迁移参考"
+    ],
+    "layout_rules": [
+      {
+        "rule": "算法迁移参考：将压裂井场设备抽象为不等面积设施布局问题，使用安全距离、邻近关系、道路通达和管线长度构造目标函数。",
+        "equipment": [
+          "压裂泵车",
+          "砂罐",
+          "水罐",
+          "道路",
+          "管汇"
+        ],
+        "constraint_type": "设备邻近关系",
+        "value": "算法迁移参考",
+        "evidence": "来源研究设施布局问题的启发式、精确或多目标优化方法。",
+        "confidence": "high"
+      }
+    ],
+    "optimization_methods": [
+      "遗传算法",
+      "模拟退火",
+      "NSGA-II",
+      "混合整数规划"
+    ],
+    "applicable_scenarios": [
+      "压裂井场布局智能生成系统",
+      "页岩气平台压裂",
+      "电驱压裂/大型压裂",
+      "井场 HSE 校核"
+    ],
+    "citation": "78. Esmikhani S., Kazemipoor H., Sobhani F. M., Molana S. M. H.. Solving fuzzy robust facility layout problem equipped with cranes using MPS algorithm and modified NSGA-II[J]. Expert Systems with Applications, 210: 118402, 2022. DOI: [10.1016/j.eswa.2022.118402](https://doi.org/10.1016/j.eswa.2022.118402)",
+    "url_or_doi": "https://doi.org/10.1016/j.eswa.2022.118402"
+  }
+]

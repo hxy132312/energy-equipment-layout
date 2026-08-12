@@ -1,0 +1,134 @@
+{
+  "metadata": {
+    "project": "FracAI",
+    "version": "0.2.0",
+    "created_at": "2026-08-10",
+    "principle": "不把未核验的经验距离写成强制标准；碰撞、边界、禁布区为硬约束，设备间米数为可配置默认值。"
+  },
+  "hard_constraints": [
+    {
+      "id": "R-HARD-COLLISION",
+      "rule": "设备矩形不得相交，碰撞率必须为 0。",
+      "equipment": ["全部设备"],
+      "constraint_type": "碰撞避让",
+      "value": "overlap == false",
+      "source_ids": ["KB-011", "KB-012"],
+      "confidence": "high"
+    },
+    {
+      "id": "R-HARD-BOUNDARY",
+      "rule": "设备必须位于井场边界内；缺口、坡坎和斜边退让区按不可布置空间处理。",
+      "equipment": ["全部设备"],
+      "constraint_type": "禁布区",
+      "value": "inside field boundary",
+      "source_ids": ["KB-004", "KB-007"],
+      "confidence": "high"
+    },
+    {
+      "id": "R-HARD-FORBIDDEN",
+      "rule": "设备不得占用禁布区，管线穿越禁布区需报警并强惩罚。",
+      "equipment": ["全部设备", "管线"],
+      "constraint_type": "禁布区",
+      "value": "no overlap / no crossing",
+      "source_ids": ["KB-004"],
+      "confidence": "high"
+    }
+  ],
+  "recommended_constraints": [
+    {
+      "id": "R-FLOW-CHAIN",
+      "rule": "砂/水/化学剂 -> 混砂车 -> 压裂泵车 -> 管汇 -> 井口应形成清晰流程链。",
+      "equipment": ["砂罐", "水罐", "化添撬", "混砂车", "压裂泵车", "管汇", "井口"],
+      "constraint_type": "流程顺序",
+      "value": "relative order and connection graph",
+      "source_ids": ["KB-001", "KB-009"],
+      "confidence": "high"
+    },
+    {
+      "id": "R-ROAD-SAND",
+      "rule": "供砂区靠近井场入口和道路，减少砂料车辆穿越高压核心区。",
+      "equipment": ["砂罐", "道路", "混砂车"],
+      "constraint_type": "道路通达",
+      "value": "distance_to_road <= 10m in prototype",
+      "source_ids": ["KB-001", "KB-003"],
+      "confidence": "medium"
+    },
+    {
+      "id": "R-PIPE-SHORT",
+      "rule": "高压管线尽量短、交叉少、转弯少，优先压缩管汇-泵车-井口链路。",
+      "equipment": ["井口", "管汇", "压裂泵车"],
+      "constraint_type": "管线长度",
+      "value": "minimize total length and crossings",
+      "source_ids": ["KB-001", "KB-011"],
+      "confidence": "high"
+    },
+    {
+      "id": "R-CONTROL-REMOTE",
+      "rule": "仪表车和人员活动区布置在高压核心区外侧，并保持道路可达。",
+      "equipment": ["仪表车", "管汇", "压裂泵车", "井口", "道路"],
+      "constraint_type": "安全距离",
+      "value": "prototype default >= 12-18m, project-specific",
+      "source_ids": ["KB-002", "KB-003", "KB-007"],
+      "confidence": "medium"
+    },
+    {
+      "id": "R-EMERGENCY",
+      "rule": "保留应急通道、消防取用空间、逃生路线和紧急集合区域。",
+      "equipment": ["消防应急区", "道路", "仪表车"],
+      "constraint_type": "道路通达",
+      "value": "two or more exits required by AQ 2012-2007",
+      "source_ids": ["KB-006", "KB-007"],
+      "confidence": "high"
+    }
+  ],
+  "prototype_default_distances": [
+    {
+      "id": "D-001",
+      "pair": ["井口", "压裂泵车"],
+      "min_m": 12,
+      "status": "configurable_default",
+      "confidence": "low",
+      "note": "未检索到通用强制米数；用于原型评分，正式设计需以企业 HSE/项目标准替换。"
+    },
+    {
+      "id": "D-002",
+      "pair": ["井口", "仪表车"],
+      "min_m": 18,
+      "status": "configurable_default",
+      "confidence": "low",
+      "note": "人员控制区远离高压核心的工程默认值。"
+    },
+    {
+      "id": "D-003",
+      "pair": ["管汇", "仪表车"],
+      "min_m": 18,
+      "status": "configurable_default",
+      "confidence": "low",
+      "note": "人员控制区远离高压管汇的工程默认值。"
+    },
+    {
+      "id": "D-004",
+      "pair": ["混砂车", "砂罐"],
+      "max_m": 28,
+      "status": "recommended",
+      "confidence": "medium",
+      "note": "由供砂区靠近混砂/入口的公开原则转化，不是强制距离。"
+    },
+    {
+      "id": "D-005",
+      "pair": ["管汇", "井口"],
+      "max_m": 18,
+      "status": "recommended",
+      "confidence": "medium",
+      "note": "由高压管汇走向优化原则转化。"
+    }
+  ],
+  "score_profiles": {
+    "balanced": "综合均衡：安全、碰撞、流程、管线、道路和占地共同加权。",
+    "safety": "安全优先：提高安全距离、碰撞和禁布区权重。",
+    "efficiency": "效率优先：提高管线长度、流程合理和道路通达权重。",
+    "cost": "成本优先：提高管线长度和空间利用权重。",
+    "convenience": "施工便捷：提高车辆道路、检修和流程通达权重。",
+    "compact": "占地最小：提高空间利用权重，同时保留碰撞和安全底线。"
+  }
+}
