@@ -1,21 +1,31 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import Konva from "konva";
 import {
+  Activity,
   ArrowDownToLine,
+  Boxes,
   Download,
   Eye,
   EyeOff,
   FileJson,
+  FileText,
+  Network,
   RefreshCcw,
+  Route,
   RotateCcw,
+  ShieldCheck,
   SlidersHorizontal,
 } from "lucide-react";
 import { Circle, Group, Layer, Line, Rect, Stage, Text } from "react-konva";
+import { YardScene3D } from "./components/YardScene3D";
 import {
   EQUIPMENT_SPECS,
   PUBLIC_RULE_NOTES,
+  RULE_MATRIX,
   SCORE_PROFILES,
   SIMULATED_SAMPLE_CASES,
+  type SampleCase,
   type FracScale,
   type ScoreProfile,
   type YardShape,
@@ -25,12 +35,15 @@ import {
   generateLayoutOptions,
   getConnectedDeviceNames,
   moveDevice,
+  runIterativeOptimization,
   type Device,
+  type IterativeOptimizationResult,
   type LayoutCandidate,
   type LayoutParams,
   type Rect as LayoutRect,
   type Violation,
 } from "./lib/layoutEngine";
+import { getBoundaryWorldPoints } from "./lib/fieldGeometry";
 
 const STAGE_WIDTH = 900;
 const STAGE_HEIGHT = 640;
@@ -62,6 +75,8 @@ interface LayerState {
   heatmap: boolean;
 }
 
+type ViewMode = "2d" | "3d";
+
 const defaultLayers: LayerState = {
   safety: true,
   pipelines: true,
@@ -78,6 +93,10 @@ function App() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
   const [layers, setLayers] = useState<LayerState>(defaultLayers);
+  const [paramsDirty, setParamsDirty] = useState(false);
+  const [iterating, setIterating] = useState(false);
+  const [iterationResult, setIterationResult] = useState<IterativeOptimizationResult | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("2d");
   const active = candidates[activeIndex];
 
   const view = useMemo(() => {
@@ -91,6 +110,8 @@ function App() {
   const selectedViolations = selectedDevice
     ? active.violations.filter((violation) => violation.deviceIds.includes(selectedDevice.id))
     : [];
+  const highRiskCount = active.violations.filter((violation) => violation.severity === "high").length;
+  const mediumRiskCount = active.violations.filter((violation) => violation.severity === "medium").length;
 
   useEffect(() => {
     setSelectedDeviceId((current) => {
@@ -104,6 +125,7 @@ function App() {
     setCandidates(next);
     setActiveIndex(0);
     setSelectedDeviceId(next[0]?.devices[0]?.id ?? null);
+    setParamsDirty(false);
   };
 
   const reset = () => {
@@ -113,6 +135,40 @@ function App() {
     setCandidates(next);
     setActiveIndex(0);
     setSelectedDeviceId(next[0]?.devices[0]?.id ?? null);
+    setParamsDirty(false);
+    setIterationResult(null);
+  };
+
+  const loadSampleCase = (sample: SampleCase) => {
+    const next = generateLayoutOptions(sample.params);
+    setParams({ ...sample.params });
+    setCandidates(next);
+    setActiveIndex(0);
+    setSelectedDeviceId(next[0]?.devices[0]?.id ?? null);
+    setParamsDirty(false);
+    setIterationResult(null);
+  };
+
+  const updateParam = <K extends keyof LayoutParams>(key: K, value: LayoutParams[K]) => {
+    setParams((current) => ({ ...current, [key]: value }));
+    setParamsDirty(true);
+    setIterationResult(null);
+  };
+
+  const runHundredIterations = () => {
+    setIterating(true);
+    window.setTimeout(() => {
+      const result = runIterativeOptimization(params, 100);
+      setIterationResult(result);
+      setCandidates((current) => {
+        const preserved = current.filter((candidate) => candidate.id !== result.best.id);
+        return [result.best, ...preserved].slice(0, 4);
+      });
+      setActiveIndex(0);
+      setSelectedDeviceId(result.best.devices[0]?.id ?? null);
+      setParamsDirty(false);
+      setIterating(false);
+    }, 16);
   };
 
   const updateActiveCandidate = (candidate: LayoutCandidate) => {
@@ -132,11 +188,15 @@ function App() {
   };
 
   const exportJson = () => {
-    downloadText(JSON.stringify(createExportPayload(active), null, 2), `${active.name}-layout.json`, "application/json;charset=utf-8");
+    downloadText(JSON.stringify(createExportPayload(active, iterationResult), null, 2), `${active.name}-layout.json`, "application/json;charset=utf-8");
   };
 
   const exportDxf = () => {
     downloadText(createDxf(active), `${active.name}-layout.dxf`, "application/dxf;charset=utf-8");
+  };
+
+  const exportReportSummary = () => {
+    downloadText(createReportSummary(active), `${active.name}-报告证据摘要.md`, "text/markdown;charset=utf-8");
   };
 
   const toggleLayer = (key: keyof LayerState) => {
@@ -147,9 +207,12 @@ function App() {
     <main className="app-shell">
       <aside className="control-panel">
         <div className="brand-block">
-          <div className="brand-mark">FracAI</div>
+          <div className="brand-row">
+            <div className="brand-mark">FracAI</div>
+            <span>能源装备竞赛系统</span>
+          </div>
           <h1>压裂井场布局智能生成原型</h1>
-          <p>规则约束 + 多目标优化 + 可解释评分</p>
+          <p>规则约束、多目标优化与可解释评分的一体化工作台</p>
         </div>
 
         <section className="panel-section">
@@ -157,50 +220,50 @@ function App() {
             <SlidersHorizontal size={17} />
             <span>输入参数</span>
           </div>
-          <NumberField label="井场长度 m" min={80} max={220} value={params.fieldWidth} onChange={(fieldWidth) => setParams({ ...params, fieldWidth })} />
-          <NumberField label="井场宽度 m" min={60} max={160} value={params.fieldHeight} onChange={(fieldHeight) => setParams({ ...params, fieldHeight })} />
-          <SelectField label="地形边界" value={params.shape} options={shapeOptions} onChange={(shape) => setParams({ ...params, shape })} />
-          <SelectField label="压裂规模" value={params.scale} options={scaleOptions} onChange={(scale) => setParams({ ...params, scale })} />
+          <NumberField label="井场长度 m" min={80} max={220} value={params.fieldWidth} onChange={(fieldWidth) => updateParam("fieldWidth", fieldWidth)} />
+          <NumberField label="井场宽度 m" min={60} max={160} value={params.fieldHeight} onChange={(fieldHeight) => updateParam("fieldHeight", fieldHeight)} />
+          <SelectField label="地形边界" value={params.shape} options={shapeOptions} onChange={(shape) => updateParam("shape", shape)} />
+          <SelectField label="压裂规模" value={params.scale} options={scaleOptions} onChange={(scale) => updateParam("scale", scale)} />
           <SelectField
             label="评分偏向"
             value={params.scoreProfile}
             options={profileOptions}
-            onChange={(scoreProfile) => setParams({ ...params, scoreProfile })}
+            onChange={(scoreProfile) => updateParam("scoreProfile", scoreProfile)}
           />
           <NumberField
             label="压裂泵车数量"
             min={4}
             max={16}
             value={params.fracPumpCount}
-            onChange={(fracPumpCount) => setParams({ ...params, fracPumpCount })}
+            onChange={(fracPumpCount) => updateParam("fracPumpCount", fracPumpCount)}
           />
           <NumberField
             label="砂罐数量"
             min={2}
             max={8}
             value={params.sandTankCount}
-            onChange={(sandTankCount) => setParams({ ...params, sandTankCount })}
+            onChange={(sandTankCount) => updateParam("sandTankCount", sandTankCount)}
           />
           <NumberField
             label="水罐数量"
             min={1}
             max={6}
             value={params.waterTankCount}
-            onChange={(waterTankCount) => setParams({ ...params, waterTankCount })}
+            onChange={(waterTankCount) => updateParam("waterTankCount", waterTankCount)}
           />
           <NumberField
             label="化添撬数量"
             min={1}
             max={4}
             value={params.additiveSkidCount}
-            onChange={(additiveSkidCount) => setParams({ ...params, additiveSkidCount })}
+            onChange={(additiveSkidCount) => updateParam("additiveSkidCount", additiveSkidCount)}
           />
           <label className="toggle-row">
             <span>启用禁布区</span>
             <input
               type="checkbox"
               checked={params.enableForbiddenZone}
-              onChange={(event) => setParams({ ...params, enableForbiddenZone: event.target.checked })}
+              onChange={(event) => updateParam("enableForbiddenZone", event.target.checked)}
             />
           </label>
           <NumberField
@@ -208,18 +271,35 @@ function App() {
             min={20}
             max={600}
             value={params.optimizationIterations}
-            onChange={(optimizationIterations) => setParams({ ...params, optimizationIterations })}
+            onChange={(optimizationIterations) => updateParam("optimizationIterations", optimizationIterations)}
           />
           <div className="button-grid">
             <button className="primary-button" onClick={regenerate}>
               <RefreshCcw size={16} />
-              生成方案
+              {paramsDirty ? "重新生成" : "生成方案"}
             </button>
             <button className="ghost-button" onClick={reset}>
               <RotateCcw size={16} />
               重置
             </button>
+            <button className="tertiary-button wide" onClick={runHundredIterations} disabled={iterating}>
+              <Activity size={16} />
+              {iterating ? "迭代中" : "100轮迭代"}
+            </button>
           </div>
+          {iterationResult ? <IterationSummary result={iterationResult} /> : null}
+        </section>
+
+        <section className="panel-section sample-loader">
+          <div className="section-title">典型案例复现</div>
+          {SIMULATED_SAMPLE_CASES.map((sample) => (
+            <button key={sample.id} className="sample-button" onClick={() => loadSampleCase(sample)}>
+              <strong>{sample.name.replace("抽象案例 ", "案例 ")}</strong>
+              <span>
+                {sample.boundary.width}m x {sample.boundary.height}m / {scaleText(sample.scale)} / {sample.ruleTags.slice(0, 2).join("、")}
+              </span>
+            </button>
+          ))}
         </section>
 
         <section className="panel-section">
@@ -243,10 +323,22 @@ function App() {
       <section className="workspace">
         <div className="workspace-toolbar">
           <div>
-            <strong>{active.name}</strong>
+            <strong>井场方案优化工作台</strong>
             <span>
               {active.templateName} / {active.params.fieldWidth}m x {active.params.fieldHeight}m / {SCORE_PROFILES[active.params.scoreProfile].label}
             </span>
+          </div>
+          <div className={`operation-state ${paramsDirty ? "dirty" : ""}`}>
+            <Activity size={16} />
+            <span>{paramsDirty ? "参数待生成" : "模型已同步"}</span>
+          </div>
+          <div className="view-mode-switch" aria-label="切换布局视图">
+            <button className={viewMode === "2d" ? "active" : ""} onClick={() => setViewMode("2d")}>
+              2D
+            </button>
+            <button className={viewMode === "3d" ? "active" : ""} onClick={() => setViewMode("3d")}>
+              3D
+            </button>
           </div>
           <div className="export-actions">
             <button onClick={exportPng} title="导出 PNG 图片">
@@ -261,45 +353,73 @@ function App() {
               <ArrowDownToLine size={16} />
               DXF
             </button>
+            <button onClick={exportReportSummary} title="导出报告证据摘要">
+              <FileText size={16} />
+              摘要
+            </button>
           </div>
         </div>
 
+        <div className="workspace-kpis">
+          <StatusTile icon={<ShieldCheck size={18} />} label="安全合规" value={toPercent(active.scores.safetyCompliance)} tone="green" />
+          <StatusTile icon={<Network size={18} />} label="管线评分" value={toPercent(active.scores.pipelineScore)} tone="cyan" />
+          <StatusTile icon={<Route size={18} />} label="道路通达" value={toPercent(active.scores.roadAccessibility)} tone="amber" />
+          <StatusTile icon={<Boxes size={18} />} label="设备数量" value={`${active.devices.length} 台套`} tone="steel" />
+        </div>
+
         <div className="canvas-wrap">
-          <Stage ref={stageRef} width={STAGE_WIDTH} height={STAGE_HEIGHT} className="stage">
-            <Layer>
-              <Rect x={0} y={0} width={STAGE_WIDTH} height={STAGE_HEIGHT} fill="#07111f" />
-              <Grid view={view} params={active.params} />
-              <Boundary view={view} params={active.params} />
-              {layers.roads ? active.roads.map((road) => <RoadShape key={road.id} road={road} view={view} />) : null}
-              {layers.forbidden ? active.forbiddenZones.map((zone) => <ForbiddenShape key={zone.id} zone={zone} view={view} />) : null}
-              {layers.heatmap ? <HeatmapLayer candidate={active} view={view} /> : null}
-              {layers.pipelines ? <PipelineLayer candidate={active} view={view} /> : null}
-              {active.devices.map((device) => (
-                <DeviceShape
-                  key={device.id}
-                  device={device}
-                  selected={device.id === selectedDeviceId}
-                  view={view}
-                  warning={active.violations.some((violation) => violation.deviceIds.includes(device.id))}
-                  showSafety={layers.safety}
-                  showLabel={layers.labels}
-                  onSelect={() => setSelectedDeviceId(device.id)}
-                  onDragEnd={(x, y) => handleDragEnd(device, x, y)}
-                />
-              ))}
-            </Layer>
-          </Stage>
+          {viewMode === "2d" ? (
+            <Stage ref={stageRef} width={STAGE_WIDTH} height={STAGE_HEIGHT} className="stage">
+              <Layer>
+                <Rect x={0} y={0} width={STAGE_WIDTH} height={STAGE_HEIGHT} fill="#07111f" />
+                <Grid view={view} params={active.params} />
+                <Boundary view={view} params={active.params} />
+                {layers.roads ? active.roads.map((road) => <RoadShape key={road.id} road={road} view={view} />) : null}
+                {layers.forbidden ? active.forbiddenZones.map((zone) => <ForbiddenShape key={zone.id} zone={zone} view={view} />) : null}
+                {layers.heatmap ? <HeatmapLayer candidate={active} view={view} /> : null}
+                {layers.pipelines ? <PipelineLayer candidate={active} view={view} /> : null}
+                {active.devices.map((device) => (
+                  <DeviceShape
+                    key={device.id}
+                    device={device}
+                    selected={device.id === selectedDeviceId}
+                    view={view}
+                    warning={active.violations.some((violation) => violation.deviceIds.includes(device.id))}
+                    showSafety={layers.safety}
+                    showLabel={layers.labels}
+                    onSelect={() => setSelectedDeviceId(device.id)}
+                    onDragEnd={(x, y) => handleDragEnd(device, x, y)}
+                  />
+                ))}
+              </Layer>
+            </Stage>
+          ) : (
+            <YardScene3D candidate={active} layers={layers} selectedDeviceId={selectedDeviceId} onSelectDevice={setSelectedDeviceId} />
+          )}
         </div>
       </section>
 
       <aside className="result-panel">
+        <section className="ops-summary">
+          <div>
+            <span>当前方案</span>
+            <strong>{active.name}</strong>
+          </div>
+          <div className="risk-badges">
+            <b>{highRiskCount} 高风险</b>
+            <b>{mediumRiskCount} 中风险</b>
+          </div>
+        </section>
+
         <section className="panel-section schemes">
           <div className="section-title">候选方案排序</div>
           {candidates.map((candidate, index) => (
             <button key={candidate.id} className={`scheme-card ${index === activeIndex ? "active" : ""}`} onClick={() => setActiveIndex(index)}>
               <span>{candidate.name}</span>
               <strong>{candidate.scores.total.toFixed(1)}</strong>
-              <small>{candidate.templateName}</small>
+              <small>
+                {candidate.templateName} / {candidate.violations.length} 项告警 / 管线 {candidate.scores.pipelineLength.toFixed(1)}m
+              </small>
             </button>
           ))}
         </section>
@@ -323,6 +443,22 @@ function App() {
                 <span>{detail.explanation}</span>
               </div>
               <b>{detail.contribution.toFixed(1)}</b>
+            </div>
+          ))}
+        </section>
+
+        <section className="panel-section rule-matrix">
+          <div className="section-title">规则依据矩阵</div>
+          {RULE_MATRIX.map((rule) => (
+            <div key={rule.id} className="rule-card">
+              <div>
+                <strong>{rule.id}</strong>
+                <span>{rule.category}</span>
+              </div>
+              <p>{rule.rule}</p>
+              <small>
+                {rule.target} / 置信度：{rule.confidence}
+              </small>
             </div>
           ))}
         </section>
@@ -358,6 +494,54 @@ function App() {
         </section>
       </aside>
     </main>
+  );
+}
+
+function IterationSummary({ result }: { result: IterativeOptimizationResult }) {
+  const last = result.history[result.history.length - 1];
+  return (
+    <div className="iteration-summary">
+      <div>
+        <span>100轮最佳</span>
+        <strong>{result.finalBestScore.toFixed(1)}</strong>
+      </div>
+      <div>
+        <span>提升</span>
+        <strong>{result.improvement >= 0 ? "+" : ""}{result.improvement.toFixed(1)}</strong>
+      </div>
+      <div>
+        <span>后10轮均分</span>
+        <strong>{result.averageFinalScore.toFixed(1)}</strong>
+      </div>
+      <div>
+        <span>硬约束风险</span>
+        <strong>{last?.hardViolationCount ?? 0}</strong>
+      </div>
+      <div>
+        <span>管线总长</span>
+        <strong>{(last?.pipelineLength ?? result.best.scores.pipelineLength).toFixed(1)}m</strong>
+      </div>
+      <div>
+        <span>道路通达</span>
+        <strong>{toPercent(last?.roadAccessibility ?? result.best.scores.roadAccessibility)}</strong>
+      </div>
+      <small>
+        {result.rounds} 轮 / {last?.templateName ?? result.best.templateName} / 安全 {toPercent(last?.safetyCompliance ?? result.best.scores.safetyCompliance)} / 流程{" "}
+        {toPercent(last?.processRationality ?? result.best.scores.processRationality)} / {last?.warningCount ?? result.best.violations.length} 项告警
+      </small>
+    </div>
+  );
+}
+
+function StatusTile({ icon, label, value, tone }: { icon: ReactNode; label: string; value: string; tone: "green" | "cyan" | "amber" | "steel" }) {
+  return (
+    <div className={`status-tile ${tone}`}>
+      <span>{icon}</span>
+      <div>
+        <small>{label}</small>
+        <strong>{value}</strong>
+      </div>
+    </div>
   );
 }
 
@@ -683,36 +867,17 @@ function screenToWorld(x: number, y: number, view: ViewTransform) {
 }
 
 function boundaryPoints(params: LayoutParams, view: ViewTransform): number[] {
-  const w = params.fieldWidth;
-  const h = params.fieldHeight;
-  const points =
-    params.shape === "trapezoid"
-      ? [
-          [12, 0],
-          [w, 0],
-          [w - 8, h],
-          [0, h],
-        ]
-      : params.shape === "notched"
-        ? [
-            [0, 0],
-            [w - 30, 0],
-            [w - 30, 24],
-            [w, 24],
-            [w, h],
-            [0, h],
-          ]
-        : [
-            [0, 0],
-            [w, 0],
-            [w, h],
-            [0, h],
-          ];
-  return points.flatMap(([x, y]) => [worldX(x, view), worldY(y, view)]);
+  return getBoundaryWorldPoints(params).flatMap(([x, y]) => [worldX(x, view), worldY(y, view)]);
 }
 
 function toPercent(value: number): string {
   return `${(value * 100).toFixed(1)}%`;
+}
+
+function scaleText(scale: FracScale): string {
+  if (scale === "large") return "大规模";
+  if (scale === "medium") return "中等规模";
+  return "小规模";
 }
 
 function downloadUrl(url: string, filename: string) {
@@ -729,7 +894,30 @@ function downloadText(text: string, filename: string, type: string) {
   URL.revokeObjectURL(url);
 }
 
-function createExportPayload(candidate: LayoutCandidate) {
+function createExportPayload(candidate: LayoutCandidate, iterationResult: IterativeOptimizationResult | null) {
+  const optimizationTrace = iterationResult
+    ? {
+        rounds: iterationResult.rounds,
+        initialBestScore: Number(iterationResult.initialBestScore.toFixed(2)),
+        finalBestScore: Number(iterationResult.finalBestScore.toFixed(2)),
+        improvement: Number(iterationResult.improvement.toFixed(2)),
+        averageFinalScore: Number(iterationResult.averageFinalScore.toFixed(2)),
+        latest: iterationResult.history[iterationResult.history.length - 1] ?? null,
+        history: iterationResult.history.map((item) => ({
+          iteration: item.iteration,
+          bestScore: Number(item.bestScore.toFixed(2)),
+          averageScore: Number(item.averageScore.toFixed(2)),
+          hardViolationCount: item.hardViolationCount,
+          warningCount: item.warningCount,
+          pipelineLength: Number(item.pipelineLength.toFixed(2)),
+          safetyCompliance: Number(item.safetyCompliance.toFixed(4)),
+          roadAccessibility: Number(item.roadAccessibility.toFixed(4)),
+          processRationality: Number(item.processRationality.toFixed(4)),
+          templateName: item.templateName,
+        })),
+      }
+    : null;
+
   return {
     id: candidate.id,
     name: candidate.name,
@@ -756,7 +944,65 @@ function createExportPayload(candidate: LayoutCandidate) {
     scores: candidate.scores,
     violations: candidate.violations,
     explanation: candidate.explanation,
+    optimizationTrace,
   };
+}
+
+function createReportSummary(candidate: LayoutCandidate): string {
+  const equipmentCounts = candidate.devices.reduce<Record<string, number>>((counts, device) => {
+    const label = EQUIPMENT_SPECS[device.type].label;
+    counts[label] = (counts[label] ?? 0) + 1;
+    return counts;
+  }, {});
+  const countText = Object.entries(equipmentCounts)
+    .map(([label, count]) => `${label}${count}台套`)
+    .join("、");
+  const topWarnings = candidate.violations.slice(0, 8).map((violation, index) => `${index + 1}. ${violation.message}`).join("\n");
+  const scoreRows = candidate.scores.details
+    .map((detail) => `| ${detail.label} | ${(detail.score * 100).toFixed(1)}% | ${detail.weight.toFixed(2)} | ${detail.contribution.toFixed(1)} | ${detail.explanation} |`)
+    .join("\n");
+  const ruleRows = RULE_MATRIX.map((rule) => `| ${rule.id} | ${rule.category} | ${rule.target} | ${rule.confidence} | ${rule.rule} | ${rule.evidence} |`).join("\n");
+
+  return [
+    `# ${candidate.name} 报告证据摘要`,
+    "",
+    "## 输入参数",
+    `- 井场尺寸：${candidate.params.fieldWidth}m x ${candidate.params.fieldHeight}m`,
+    `- 地形边界：${candidate.params.shape}`,
+    `- 压裂规模：${scaleText(candidate.params.scale)}`,
+    `- 评分画像：${SCORE_PROFILES[candidate.params.scoreProfile].label}`,
+    `- 设备构成：${countText}`,
+    `- 禁布区：${candidate.params.enableForbiddenZone ? "启用" : "未启用"}`,
+    `- 优化迭代次数：${candidate.params.optimizationIterations}`,
+    "",
+    "## 方案结果",
+    `- 模板：${candidate.templateName}`,
+    `- 综合评分：${candidate.scores.total.toFixed(1)}`,
+    `- 安全合规率：${toPercent(candidate.scores.safetyCompliance)}`,
+    `- 碰撞率：${toPercent(candidate.scores.collisionRate)}`,
+    `- 道路通达性：${toPercent(candidate.scores.roadAccessibility)}`,
+    `- 空间利用率：${toPercent(candidate.scores.spaceUtilization)}`,
+    `- 管线总长：${candidate.scores.pipelineLength.toFixed(1)}m`,
+    `- 告警数量：${candidate.violations.length}`,
+    "",
+    "## 评分分解",
+    "| 指标 | 子项得分 | 权重 | 贡献分 | 解释 |",
+    "| --- | ---: | ---: | ---: | --- |",
+    scoreRows,
+    "",
+    "## 主要告警",
+    topWarnings || "当前方案无硬碰撞、越界或禁布区占用。",
+    "",
+    "## 规则依据矩阵",
+    "| 编号 | 类别 | 对象 | 置信度 | 规则 | 依据说明 |",
+    "| --- | --- | --- | --- | --- | --- |",
+    ruleRows,
+    "",
+    "## 导出说明",
+    "- PNG 用于报告插图和评审快速浏览。",
+    "- JSON 保留 params、devices、roads、forbiddenZones、connections、scores、violations 和 explanation 字段，可用于复核。",
+    "- DXF 按 BOUNDARY、ROAD、FORBIDDEN、PIPELINE、LABEL 和设备类型分层，可作为 CAD 图样支撑。",
+  ].join("\n");
 }
 
 function createDxf(candidate: LayoutCandidate): string {
@@ -767,6 +1013,12 @@ function createDxf(candidate: LayoutCandidate): string {
   const addText = (x: number, y: number, text: string, layer = "TEXT") => {
     lines.push("0", "TEXT", "8", layer, "10", String(x), "20", String(-y), "40", "2.5", "1", text);
   };
+  const addPolygon = (points: Array<[number, number]>, layer: string) => {
+    points.forEach(([x1, y1], index) => {
+      const [x2, y2] = points[(index + 1) % points.length];
+      addLine(x1, y1, x2, y2, layer);
+    });
+  };
   const addRect = (rect: LayoutRect, layer: string) => {
     addLine(rect.x, rect.y, rect.x + rect.width, rect.y, layer);
     addLine(rect.x + rect.width, rect.y, rect.x + rect.width, rect.y + rect.height, layer);
@@ -774,7 +1026,7 @@ function createDxf(candidate: LayoutCandidate): string {
     addLine(rect.x, rect.y + rect.height, rect.x, rect.y, layer);
   };
 
-  addRect({ x: 0, y: 0, width: candidate.params.fieldWidth, height: candidate.params.fieldHeight }, "BOUNDARY");
+  addPolygon(getBoundaryWorldPoints(candidate.params), "BOUNDARY");
   candidate.roads.forEach((road) => addRect(road, "ROAD"));
   candidate.forbiddenZones.forEach((zone) => addRect(zone, "FORBIDDEN"));
   candidate.devices.forEach((device) => {

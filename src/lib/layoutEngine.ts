@@ -112,6 +112,30 @@ export interface LayoutCandidate {
   explanation: string[];
 }
 
+export interface IterationSnapshot {
+  iteration: number;
+  bestScore: number;
+  averageScore: number;
+  hardViolationCount: number;
+  highRiskCount: number;
+  warningCount: number;
+  pipelineLength: number;
+  safetyCompliance: number;
+  roadAccessibility: number;
+  processRationality: number;
+  templateName: string;
+}
+
+export interface IterativeOptimizationResult {
+  rounds: number;
+  best: LayoutCandidate;
+  history: IterationSnapshot[];
+  initialBestScore: number;
+  finalBestScore: number;
+  improvement: number;
+  averageFinalScore: number;
+}
+
 interface Point {
   x: number;
   y: number;
@@ -179,25 +203,76 @@ export function createDefaultParams(): LayoutParams {
   return { ...DEFAULT_PARAMS };
 }
 
-export function generateLayoutOptions(params: LayoutParams): LayoutCandidate[] {
+export function generateLayoutOptions(params: LayoutParams, seedOffset = 0): LayoutCandidate[] {
   const normalized = normalizeParams(params);
   const rankedTemplates = rankTemplates(normalized);
   const rawCandidates = rankedTemplates.flatMap((template, templateIndex) => {
     return [0, 1, 2].map((variant) => {
-      const seed = 3907 + templateIndex * 491 + variant * 97 + normalized.fracPumpCount * 11 + normalized.sandTankCount * 17;
+      const seed = 3907 + seedOffset * 1009 + templateIndex * 491 + variant * 97 + normalized.fracPumpCount * 11 + normalized.sandTankCount * 17;
       const initial = createInitialLayout(normalized, template.id, seed, variant);
       return optimizeCandidate(initial, seed);
     });
   });
 
   return rawCandidates
-    .sort((a, b) => b.scores.total - a.scores.total)
+    .sort(compareCandidates)
     .slice(0, 4)
-    .map((candidate, index) => ({
-      ...candidate,
-      id: `scheme-${index + 1}`,
-      name: `候选方案 ${index + 1}`,
-    }));
+    .map((candidate, index) => {
+      const improved = index === 0 ? polishCandidate(candidate, 8719 + seedOffset * 131) : candidate;
+      return {
+        ...improved,
+        id: `scheme-${index + 1}`,
+        name: `候选方案 ${index + 1}`,
+        explanation: createEvidenceExplanation(improved),
+      };
+    });
+}
+
+export function runIterativeOptimization(params: LayoutParams, rounds = 100): IterativeOptimizationResult {
+  const safeRounds = clamp(Math.round(rounds), 1, 500);
+  const iterativeParams: LayoutParams = {
+    ...params,
+    optimizationIterations: clamp(Math.round(params.optimizationIterations * 0.35), 35, 160),
+  };
+  let globalBest: LayoutCandidate = generateLayoutOptions(params)[0];
+  const initialBestScore = globalBest.scores.total;
+  const history: IterationSnapshot[] = [];
+
+  for (let iteration = 1; iteration <= safeRounds; iteration += 1) {
+    const candidates = generateLayoutOptions(iterativeParams, iteration);
+    const roundBest = candidates[0];
+    const averageScore = average(candidates.map((candidate) => candidate.scores.total));
+
+    if (isBetterCandidate(roundBest, globalBest)) {
+      globalBest = roundBest;
+    }
+
+    history.push({
+      iteration,
+      bestScore: globalBest.scores.total,
+      averageScore,
+      hardViolationCount: countHardViolations(globalBest),
+      highRiskCount: globalBest.violations.filter((violation) => violation.severity === "high").length,
+      warningCount: globalBest.violations.length,
+      pipelineLength: globalBest.scores.pipelineLength,
+      safetyCompliance: globalBest.scores.safetyCompliance,
+      roadAccessibility: globalBest.scores.roadAccessibility,
+      processRationality: globalBest.scores.processRationality,
+      templateName: globalBest.templateName,
+    });
+  }
+
+  const best = globalBest;
+  const finalBestScore = best.scores.total;
+  return {
+    rounds: safeRounds,
+    best,
+    history,
+    initialBestScore,
+    finalBestScore,
+    improvement: finalBestScore - initialBestScore,
+    averageFinalScore: average(history.slice(-10).map((item) => item.averageScore)),
+  };
 }
 
 export function recalculateCandidate(candidate: LayoutCandidate): LayoutCandidate {
@@ -270,7 +345,8 @@ function createInitialLayout(params: LayoutParams, templateId: TemplateId, seed:
     explanation: [
       `模板匹配：根据长宽比 ${(params.fieldWidth / params.fieldHeight).toFixed(2)}、规模 ${scaleLabel(params.scale)} 选择“${templateName}”。`,
       "规则初始化：井口/管汇/泵车为高压核心，砂罐/水罐/化添撬围绕混砂车形成上游物料区。",
-      "多目标优化：用规则修复 + 模拟退火式扰动，在碰撞、禁布区、管线长度、道路可达和流程顺序之间寻优。",
+      "多目标优化：先修复碰撞、越界和禁布区占用，再用模拟退火式扰动与局部微调在安全、管线、道路和流程之间寻优。",
+      `评分画像：采用“${SCORE_PROFILES[params.scoreProfile].label}”权重，但硬约束风险优先于综合分排序。`,
     ],
   });
 }
@@ -378,22 +454,25 @@ function optimizeCandidate(candidate: LayoutCandidate, seed: number): LayoutCand
   const movableTypes: DeviceType[] = ["fracPump", "blender", "sandTank", "waterTank", "additiveSkid", "generator", "controlCabin", "fireZone"];
 
   for (let index = 0; index < candidate.params.optimizationIterations; index += 1) {
-    const movable = current.devices.filter((device) => movableTypes.includes(device.type));
+    const progress = index / candidate.params.optimizationIterations;
+    const movable = pickMovableDevices(current, movableTypes);
     const picked = movable[Math.floor(rng() * movable.length)];
-    const step = 11 * (1 - index / candidate.params.optimizationIterations) + 0.9;
+    const step = 11 * (1 - progress) + 0.9;
     const trialDevices = current.devices.map((item) => {
       if (item.id !== picked.id) return { ...item };
+      const guidance = calculateMoveGuidance(item, current);
+      const guidedWeight = rng() < 0.68 ? 0.72 : 0.22;
       return {
         ...item,
-        x: item.x + (rng() - 0.5) * step,
-        y: item.y + (rng() - 0.5) * step,
+        x: item.x + (rng() - 0.5) * step + guidance.x * guidedWeight * step,
+        y: item.y + (rng() - 0.5) * step + guidance.y * guidedWeight * step,
       };
     });
 
     const repaired = repairLayout(trialDevices, candidate.params, current.forbiddenZones, rng);
     const trial = evaluateCandidate({ ...current, devices: repaired });
-    const temperature = 0.08 * (1 - index / candidate.params.optimizationIterations);
-    const acceptWorse = rng() < temperature && trial.scores.total > current.scores.total - 4;
+    const temperature = 0.08 * (1 - progress);
+    const acceptWorse = rng() < temperature && trial.scores.total > current.scores.total - (4 - progress * 2.5);
 
     if (trial.scores.total >= current.scores.total || acceptWorse) current = trial;
     if (current.scores.total > best.scores.total) best = current;
@@ -402,39 +481,169 @@ function optimizeCandidate(candidate: LayoutCandidate, seed: number): LayoutCand
   return evaluateCandidate({ ...best, devices: repairLayout(best.devices, best.params, best.forbiddenZones, mulberry32(seed + 2123)) });
 }
 
-function repairLayout(devices: Device[], params: LayoutParams, zones: ForbiddenZone[], rng: () => number): Device[] {
-  const repaired = devices.map((device) => ({ ...device }));
-  for (const device of repaired) {
-    clampDevice(device, params);
-    for (const zone of zones) {
-      if (rectsOverlap(device, zone)) pushOutOfRect(device, zone, params);
-    }
-  }
+function pickMovableDevices(candidate: LayoutCandidate, movableTypes: DeviceType[]): Device[] {
+  const movable = candidate.devices.filter((device) => movableTypes.includes(device.type));
+  const warnedIds = new Set(
+    candidate.violations
+      .filter((violation) => violation.severity !== "low" || ["collision", "forbidden", "boundary", "road"].includes(violation.type))
+      .flatMap((violation) => violation.deviceIds),
+  );
+  const warnedMovable = movable.filter((device) => warnedIds.has(device.id));
+  return warnedMovable.length ? warnedMovable : movable;
+}
 
-  for (let pass = 0; pass < 5; pass += 1) {
-    for (let i = 0; i < repaired.length; i += 1) {
-      for (let j = i + 1; j < repaired.length; j += 1) {
-        const a = repaired[i];
-        const b = repaired[j];
-        if (!rectsOverlap(a, b)) continue;
-        const dx = center(b).x - center(a).x || rng() - 0.5;
-        const dy = center(b).y - center(a).y || rng() - 0.5;
-        const length = Math.max(Math.hypot(dx, dy), 0.001);
-        const push = 2.8 + pass * 0.8;
-        if (!["wellhead", "manifold"].includes(b.type)) {
-          b.x += (dx / length) * push;
-          b.y += (dy / length) * push;
-          clampDevice(b, params);
-        } else if (!["wellhead", "manifold"].includes(a.type)) {
-          a.x -= (dx / length) * push;
-          a.y -= (dy / length) * push;
-          clampDevice(a, params);
-        }
+function polishCandidate(candidate: LayoutCandidate, seed: number): LayoutCandidate {
+  let best = candidate;
+  const rng = mulberry32(seed);
+  const movableTypes: DeviceType[] = ["fracPump", "blender", "sandTank", "waterTank", "additiveSkid", "generator", "controlCabin", "fireZone"];
+  const steps = [2, 1];
+  const directions: Point[] = [
+    { x: 1, y: 0 },
+    { x: -1, y: 0 },
+    { x: 0, y: 1 },
+    { x: 0, y: -1 },
+  ];
+
+  for (const step of steps) {
+    const devices = [...best.devices.filter((device) => movableTypes.includes(device.type))].sort((a, b) => {
+      const aw = best.violations.some((violation) => violation.deviceIds.includes(a.id)) ? 0 : 1;
+      const bw = best.violations.some((violation) => violation.deviceIds.includes(b.id)) ? 0 : 1;
+      return aw - bw || rng() - 0.5;
+    });
+
+    for (const device of devices.slice(0, 5)) {
+      for (const direction of directions) {
+        const trialDevices = best.devices.map((item) =>
+          item.id === device.id
+            ? {
+                ...item,
+                x: item.x + direction.x * step,
+                y: item.y + direction.y * step,
+              }
+            : { ...item },
+        );
+        const trial = evaluateCandidate({ ...best, devices: repairLayout(trialDevices, best.params, best.forbiddenZones, rng) });
+        if (isBetterCandidate(trial, best)) best = trial;
       }
     }
   }
 
+  return best;
+}
+
+function isBetterCandidate(next: LayoutCandidate, current: LayoutCandidate): boolean {
+  const nextHard = countHardViolations(next);
+  const currentHard = countHardViolations(current);
+  if (nextHard !== currentHard) return nextHard < currentHard;
+  if (next.violations.length !== current.violations.length && Math.abs(next.scores.total - current.scores.total) < 0.8) {
+    return next.violations.length < current.violations.length;
+  }
+  return next.scores.total > current.scores.total + 0.05;
+}
+
+function compareCandidates(a: LayoutCandidate, b: LayoutCandidate): number {
+  return (
+    countHardViolations(a) - countHardViolations(b) ||
+    a.violations.length - b.violations.length ||
+    b.scores.total - a.scores.total
+  );
+}
+
+function countHardViolations(candidate: LayoutCandidate): number {
+  return candidate.violations.filter((violation) => violation.severity === "high" || ["collision", "boundary", "forbidden"].includes(violation.type)).length;
+}
+
+function calculateMoveGuidance(device: Device, candidate: LayoutCandidate): Point {
+  const vectors: Point[] = [];
+  const deviceCenter = center(device);
+
+  if (device.requiresRoad) {
+    const nearest = nearestRoadPoint(device, candidate.roads);
+    const distance = pointDistance(deviceCenter, nearest);
+    if (distance > 8) vectors.push(normalizeVector({ x: nearest.x - deviceCenter.x, y: nearest.y - deviceCenter.y }, 1.15));
+  }
+
+  const connected = connectedDevices(candidate, device);
+  if (connected.length) {
+    const target = {
+      x: average(connected.map((item) => center(item).x)),
+      y: average(connected.map((item) => center(item).y)),
+    };
+    vectors.push(normalizeVector({ x: target.x - deviceCenter.x, y: target.y - deviceCenter.y }, 0.36));
+  }
+
+  for (const violation of candidate.violations) {
+    if (!violation.deviceIds.includes(device.id)) continue;
+    const others = candidate.devices.filter((item) => item.id !== device.id && violation.deviceIds.includes(item.id));
+    if (["collision", "safety"].includes(violation.type) && others.length) {
+      const otherCenter = {
+        x: average(others.map((item) => center(item).x)),
+        y: average(others.map((item) => center(item).y)),
+      };
+      vectors.push(normalizeVector({ x: deviceCenter.x - otherCenter.x, y: deviceCenter.y - otherCenter.y }, violation.type === "collision" ? 1.4 : 0.9));
+    }
+    if (violation.type === "road" && device.requiresRoad) {
+      const nearest = nearestRoadPoint(device, candidate.roads);
+      vectors.push(normalizeVector({ x: nearest.x - deviceCenter.x, y: nearest.y - deviceCenter.y }, 1.25));
+    }
+    if (["forbidden", "boundary"].includes(violation.type)) {
+      vectors.push(normalizeVector({ x: candidate.params.fieldWidth / 2 - deviceCenter.x, y: candidate.params.fieldHeight / 2 - deviceCenter.y }, 1.1));
+    }
+  }
+
+  return vectors.length
+    ? normalizeVector({ x: vectors.reduce((sum, vector) => sum + vector.x, 0), y: vectors.reduce((sum, vector) => sum + vector.y, 0) }, 1)
+    : { x: 0, y: 0 };
+}
+
+function repairLayout(devices: Device[], params: LayoutParams, zones: ForbiddenZone[], rng: () => number): Device[] {
+  const repaired = devices.map((device) => ({ ...device }));
+  const blockingZones = [...shapeAvoidanceZones(params), ...zones];
+  repairBoundaryAndZones(repaired, params, blockingZones);
+
+  for (let pass = 0; pass < 7; pass += 1) {
+    for (let i = 0; i < repaired.length; i += 1) {
+      for (let j = i + 1; j < repaired.length; j += 1) {
+        const a = repaired[i];
+        const b = repaired[j];
+        const relation = findClearanceRule(a.type, b.type);
+        const required = rectsOverlap(a, b) ? 1 : relation?.min;
+        if (!required) continue;
+        const distance = rectDistance(a, b);
+        if (!rectsOverlap(a, b) && distance >= required) continue;
+        const push = rectsOverlap(a, b) ? 2.8 + pass * 0.8 : Math.min((required - distance) * 0.45, 2.4);
+        pushPairApart(a, b, push, params, rng);
+        if (relation?.max && distance > relation.max * 1.35 && pass > 3) {
+          pullPairTogether(a, b, Math.min((distance - relation.max) * 0.08, 1.4), params);
+        }
+      }
+    }
+    repairBoundaryAndZones(repaired, params, blockingZones);
+  }
+
   return repaired;
+}
+
+function repairBoundaryAndZones(devices: Device[], params: LayoutParams, zones: Rect[]) {
+  for (const device of devices) {
+    clampDevice(device, params);
+    for (const zone of zones) {
+      for (let attempt = 0; attempt < 3 && rectsOverlap(device, zone); attempt += 1) {
+        pushOutOfRect(device, zone, params);
+      }
+    }
+    clampDevice(device, params);
+  }
+}
+
+function shapeAvoidanceZones(params: LayoutParams): Rect[] {
+  if (params.shape === "notched") {
+    return [{ x: params.fieldWidth - 30, y: 0, width: 30, height: 24 }];
+  }
+  if (params.shape === "trapezoid") {
+    return [{ x: 0, y: 0, width: 22, height: 22 }];
+  }
+  return [];
 }
 
 function evaluateCandidate(candidate: LayoutCandidate): LayoutCandidate {
@@ -802,6 +1011,24 @@ function explainScore(
   return `子项得分 ${(score * 100).toFixed(1)}。`;
 }
 
+function createEvidenceExplanation(candidate: LayoutCandidate): string[] {
+  const base = candidate.explanation.filter((item) => !item.startsWith("结果复核：") && !item.startsWith("排序依据："));
+  const hardCount = countHardViolations(candidate);
+  const mediumCount = candidate.violations.filter((violation) => violation.severity === "medium").length;
+  const topSignals = candidate.scores.details
+    .slice()
+    .sort((a, b) => b.contribution - a.contribution)
+    .slice(0, 3)
+    .map((detail) => `${detail.label}${detail.contribution.toFixed(1)}分`)
+    .join("、");
+
+  return [
+    ...base,
+    `结果复核：硬约束风险 ${hardCount} 项，中风险 ${mediumCount} 项，碰撞率 ${(candidate.scores.collisionRate * 100).toFixed(1)}%。`,
+    `排序依据：综合分 ${candidate.scores.total.toFixed(1)}，主要贡献来自 ${topSignals || "各项指标均衡"}；管线总长 ${candidate.scores.pipelineLength.toFixed(1)}m，道路通达率 ${(candidate.scores.roadAccessibility * 100).toFixed(1)}%。`,
+  ];
+}
+
 function placeGrid(devices: Device[], startX: number, startY: number, columns: number, gapX: number, gapY: number) {
   devices.forEach((device, index) => {
     const column = index % Math.max(columns, 1);
@@ -833,6 +1060,48 @@ function pushOutOfRect(device: Device, zone: Rect, params: LayoutParams) {
   if (Math.abs(horizontal) < Math.abs(vertical)) device.x += horizontal + Math.sign(horizontal || 1) * 1.5;
   else device.y += vertical + Math.sign(vertical || 1) * 1.5;
   clampDevice(device, params);
+}
+
+function pushPairApart(a: Device, b: Device, amount: number, params: LayoutParams, rng: () => number) {
+  const ac = center(a);
+  const bc = center(b);
+  const vector = normalizeVector({ x: bc.x - ac.x || rng() - 0.5, y: bc.y - ac.y || rng() - 0.5 }, 1);
+  const aLocked = isAnchorDevice(a);
+  const bLocked = isAnchorDevice(b);
+
+  if (!bLocked) {
+    b.x += vector.x * amount * (aLocked ? 1.35 : 0.75);
+    b.y += vector.y * amount * (aLocked ? 1.35 : 0.75);
+    clampDevice(b, params);
+  }
+  if (!aLocked) {
+    a.x -= vector.x * amount * (bLocked ? 1.35 : 0.75);
+    a.y -= vector.y * amount * (bLocked ? 1.35 : 0.75);
+    clampDevice(a, params);
+  }
+}
+
+function pullPairTogether(a: Device, b: Device, amount: number, params: LayoutParams) {
+  const ac = center(a);
+  const bc = center(b);
+  const vector = normalizeVector({ x: bc.x - ac.x, y: bc.y - ac.y }, 1);
+  const aLocked = isAnchorDevice(a);
+  const bLocked = isAnchorDevice(b);
+
+  if (!aLocked) {
+    a.x += vector.x * amount;
+    a.y += vector.y * amount;
+    clampDevice(a, params);
+  }
+  if (!bLocked) {
+    b.x -= vector.x * amount;
+    b.y -= vector.y * amount;
+    clampDevice(b, params);
+  }
+}
+
+function isAnchorDevice(device: Device): boolean {
+  return device.type === "wellhead" || device.type === "manifold";
 }
 
 function getDevice(devices: Device[], id: string): Device {
@@ -869,8 +1138,40 @@ function center(rect: Rect): Point {
   return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
 }
 
+function connectedDevices(candidate: LayoutCandidate, device: Device): Device[] {
+  const relatedIds = new Set(device.connectsTo);
+  for (const other of candidate.devices) {
+    if (other.connectsTo.includes(device.id)) relatedIds.add(other.id);
+  }
+  return candidate.devices.filter((item) => relatedIds.has(item.id));
+}
+
+function nearestRoadPoint(device: Device, roads: Road[]): Point {
+  const c = center(device);
+  let best = c;
+  let bestDistance = Number.POSITIVE_INFINITY;
+  for (const road of roads) {
+    const point = {
+      x: clamp(c.x, road.x, road.x + road.width),
+      y: clamp(c.y, road.y, road.y + road.height),
+    };
+    const distance = pointDistance(c, point);
+    if (distance < bestDistance) {
+      best = point;
+      bestDistance = distance;
+    }
+  }
+  return best;
+}
+
 function pointDistance(a: Point, b: Point): number {
   return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+function normalizeVector(vector: Point, magnitude: number): Point {
+  const length = Math.hypot(vector.x, vector.y);
+  if (length < 0.001) return { x: 0, y: 0 };
+  return { x: (vector.x / length) * magnitude, y: (vector.y / length) * magnitude };
 }
 
 function lineIntersectsRect(a: Point, b: Point, rect: Rect): boolean {

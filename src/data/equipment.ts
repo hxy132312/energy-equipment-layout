@@ -52,8 +52,30 @@ export interface SampleCase {
   boundary: { width: number; height: number; shape: YardShape };
   scale: FracScale;
   templateId: TemplateId;
+  params: {
+    fieldWidth: number;
+    fieldHeight: number;
+    shape: YardShape;
+    scale: FracScale;
+    fracPumpCount: number;
+    sandTankCount: number;
+    waterTankCount: number;
+    additiveSkidCount: number;
+    enableForbiddenZone: boolean;
+    optimizationIterations: number;
+    scoreProfile: ScoreProfile;
+  };
   equipmentSummary: Record<string, number>;
   ruleTags: string[];
+}
+
+export interface RuleMatrixItem {
+  id: string;
+  category: "硬约束" | "强惩罚约束" | "推荐约束" | "可配置默认值";
+  target: string;
+  rule: string;
+  evidence: string;
+  confidence: "高" | "中" | "低";
 }
 
 export const EQUIPMENT_SPECS: Record<DeviceType, EquipmentSpec> = {
@@ -251,6 +273,65 @@ export const PUBLIC_RULE_NOTES = [
   "本原型内置的安全距离数值是可配置工程默认值；正式施工设计必须由项目标准、企业制度和 HSE 审查覆盖。",
 ];
 
+export const RULE_MATRIX: RuleMatrixItem[] = [
+  {
+    id: "R-HARD-COLLISION",
+    category: "硬约束",
+    target: "全部设备",
+    rule: "设备矩形不得相交，碰撞率目标为 0。",
+    evidence: "设备占地几何校核；公开安全原则要求避免车辆与设备互相占压。",
+    confidence: "高",
+  },
+  {
+    id: "R-HARD-BOUNDARY",
+    category: "硬约束",
+    target: "全部设备、井场边界",
+    rule: "设备必须位于可布置边界内，缺口和斜边退让按不可布置空间处理。",
+    evidence: "井场边界、坡坎、地下管线或环境敏感区均应在布置前显式标定。",
+    confidence: "高",
+  },
+  {
+    id: "R-HARD-FORBIDDEN",
+    category: "硬约束",
+    target: "设备、管线、禁布区",
+    rule: "设备不得占用禁布区，管线穿越禁布区需报警并强惩罚。",
+    evidence: "API RP 100-2、现场排水围控和环境敏感区避让原则。",
+    confidence: "高",
+  },
+  {
+    id: "R-FLOW-CHAIN",
+    category: "推荐约束",
+    target: "砂/水/化添、混砂、泵车、管汇、井口",
+    rule: "物料、混砂、增压、管汇、井口应形成清晰工艺链。",
+    evidence: "压裂井场分区与高压管汇走向优化原则。",
+    confidence: "高",
+  },
+  {
+    id: "R-ROAD-ACCESS",
+    category: "强惩罚约束",
+    target: "需装卸、检修和应急到达的设备",
+    rule: "需道路服务设备应保持道路可达，减少倒车、交叉和穿越高压核心区。",
+    evidence: "OSHA 对车辆交通、移动设备和砂料运输风险的公开提示。",
+    confidence: "中",
+  },
+  {
+    id: "R-PIPE-SHORT",
+    category: "推荐约束",
+    target: "管汇、压裂泵车、井口及连接管线",
+    rule: "高压管线尽量短、交叉少、转弯少，优先压缩管汇-泵车-井口链路。",
+    evidence: "电动压裂井场布置优化和设施布局优化文献的共同目标。",
+    confidence: "高",
+  },
+  {
+    id: "R-CONFIG-SAFETY",
+    category: "可配置默认值",
+    target: "设备间距和安全缓冲",
+    rule: "设备间米数作为原型评分默认值，不宣称为通用强制标准。",
+    evidence: "正式施工设计需由企业 HSE、项目标准和现场审查替换或确认。",
+    confidence: "低",
+  },
+];
+
 export const SIMULATED_SAMPLE_CASES: SampleCase[] = [
   {
     id: "case-120x90-medium",
@@ -258,6 +339,19 @@ export const SIMULATED_SAMPLE_CASES: SampleCase[] = [
     boundary: { width: 120, height: 90, shape: "rectangle" },
     scale: "medium",
     templateId: "compactRing",
+    params: {
+      fieldWidth: 120,
+      fieldHeight: 90,
+      shape: "rectangle",
+      scale: "medium",
+      fracPumpCount: 8,
+      sandTankCount: 4,
+      waterTankCount: 3,
+      additiveSkidCount: 2,
+      enableForbiddenZone: true,
+      optimizationIterations: 180,
+      scoreProfile: "balanced",
+    },
     equipmentSummary: { fracPump: 8, sandTank: 4, waterTank: 3, additiveSkid: 2 },
     ruleTags: ["井口居中", "环形道路", "压裂车双排", "砂水同侧"],
   },
@@ -267,6 +361,19 @@ export const SIMULATED_SAMPLE_CASES: SampleCase[] = [
     boundary: { width: 160, height: 90, shape: "rectangle" },
     scale: "large",
     templateId: "linearFlow",
+    params: {
+      fieldWidth: 160,
+      fieldHeight: 90,
+      shape: "rectangle",
+      scale: "large",
+      fracPumpCount: 12,
+      sandTankCount: 6,
+      waterTankCount: 4,
+      additiveSkidCount: 2,
+      enableForbiddenZone: true,
+      optimizationIterations: 180,
+      scoreProfile: "balanced",
+    },
     equipmentSummary: { fracPump: 12, sandTank: 6, waterTank: 4, additiveSkid: 2 },
     ruleTags: ["线性流程", "高压管线短", "道路分区"],
   },
@@ -276,6 +383,19 @@ export const SIMULATED_SAMPLE_CASES: SampleCase[] = [
     boundary: { width: 145, height: 105, shape: "notched" },
     scale: "large",
     templateId: "dualLane",
+    params: {
+      fieldWidth: 145,
+      fieldHeight: 105,
+      shape: "notched",
+      scale: "large",
+      fracPumpCount: 10,
+      sandTankCount: 5,
+      waterTankCount: 4,
+      additiveSkidCount: 2,
+      enableForbiddenZone: true,
+      optimizationIterations: 180,
+      scoreProfile: "balanced",
+    },
     equipmentSummary: { fracPump: 10, sandTank: 5, waterTank: 4, additiveSkid: 2 },
     ruleTags: ["禁布区避让", "双通道", "设备分群"],
   },
