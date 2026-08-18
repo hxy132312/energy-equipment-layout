@@ -2,18 +2,22 @@ import {
   CASE_TEMPLATES,
   EQUIPMENT_SPECS,
   SCORE_PROFILES,
+  TERRAIN_PROFILES,
   type DeviceType,
   type FracScale,
   type ScoreKey,
   type ScoreProfile,
+  type TerrainProfile,
   type TemplateId,
   type YardShape,
 } from "../data/equipment";
+import { getTerrainElevation, getTerrainElevationRange, getTerrainIntensity } from "./fieldGeometry";
 
 export interface LayoutParams {
   fieldWidth: number;
   fieldHeight: number;
   shape: YardShape;
+  terrainProfile: TerrainProfile;
   scale: FracScale;
   fracPumpCount: number;
   sandTankCount: number;
@@ -57,7 +61,7 @@ export interface ForbiddenZone extends Rect {
 export interface Violation {
   id: string;
   ruleId: string;
-  type: "collision" | "safety" | "boundary" | "forbidden" | "road" | "process" | "pipeline";
+  type: "collision" | "safety" | "boundary" | "forbidden" | "road" | "process" | "pipeline" | "terrain";
   severity: "high" | "medium" | "low";
   message: string;
   deviceIds: string[];
@@ -86,6 +90,7 @@ export interface Scores {
   pipelineLength: number;
   pipelineScore: number;
   processRationality: number;
+  terrainAdaptability: number;
   details: ScoreDetail[];
 }
 
@@ -123,6 +128,7 @@ export interface IterationSnapshot {
   safetyCompliance: number;
   roadAccessibility: number;
   processRationality: number;
+  terrainAdaptability: number;
   templateName: string;
 }
 
@@ -149,12 +155,14 @@ interface ObjectiveSnapshot {
   road: number;
   process: number;
   utilization: number;
+  terrain: number;
 }
 
 const DEFAULT_PARAMS: LayoutParams = {
   fieldWidth: 130,
   fieldHeight: 92,
   shape: "rectangle",
+  terrainProfile: "flat",
   scale: "medium",
   fracPumpCount: 8,
   sandTankCount: 4,
@@ -197,6 +205,7 @@ const SCORE_LABELS: Record<ScoreKey, string> = {
   road: "道路通达",
   process: "流程合理",
   utilization: "空间利用",
+  terrain: "环境适配",
 };
 
 export function createDefaultParams(): LayoutParams {
@@ -258,6 +267,7 @@ export function runIterativeOptimization(params: LayoutParams, rounds = 100): It
       safetyCompliance: globalBest.scores.safetyCompliance,
       roadAccessibility: globalBest.scores.roadAccessibility,
       processRationality: globalBest.scores.processRationality,
+      terrainAdaptability: globalBest.scores.terrainAdaptability,
       templateName: globalBest.templateName,
     });
   }
@@ -302,6 +312,7 @@ function normalizeParams(params: LayoutParams): LayoutParams {
     ...params,
     fieldWidth: clamp(Math.round(params.fieldWidth), 80, 220),
     fieldHeight: clamp(Math.round(params.fieldHeight), 60, 160),
+    terrainProfile: params.terrainProfile ?? "flat",
     fracPumpCount: clamp(Math.round(params.fracPumpCount), 4, 16),
     sandTankCount: clamp(Math.round(params.sandTankCount), 2, 8),
     waterTankCount: clamp(Math.round(params.waterTankCount), 1, 6),
@@ -316,7 +327,17 @@ function rankTemplates(params: LayoutParams) {
   return CASE_TEMPLATES.map((template) => {
     const aspectPenalty = Math.abs(template.preferredAspect - aspect) * 12;
     const scaleBonus = template.scaleFit.includes(params.scale) ? 10 : 0;
-    return { ...template, rank: template.scoreBias + scaleBonus - aspectPenalty };
+    const terrainBonus =
+      params.terrainProfile === "valley" && template.id === "dualLane"
+        ? 8
+        : params.terrainProfile === "slope" && template.id === "linearFlow"
+          ? 6
+          : params.terrainProfile === "ridge" && template.id === "compactRing"
+            ? 5
+            : params.terrainProfile === "waterSensitive" && template.id !== "compactRing"
+              ? 4
+              : 0;
+    return { ...template, rank: template.scoreBias + scaleBonus + terrainBonus - aspectPenalty };
   }).sort((a, b) => b.rank - a.rank);
 }
 
@@ -344,6 +365,7 @@ function createInitialLayout(params: LayoutParams, templateId: TemplateId, seed:
     scores: emptyScores(params.scoreProfile),
     explanation: [
       `模板匹配：根据长宽比 ${(params.fieldWidth / params.fieldHeight).toFixed(2)}、规模 ${scaleLabel(params.scale)} 选择“${templateName}”。`,
+      `环境识别：${TERRAIN_PROFILES[params.terrainProfile].label}，优化重点为 ${TERRAIN_PROFILES[params.terrainProfile].optimizationFocus}。`,
       "规则初始化：井口/管汇/泵车为高压核心，砂罐/水罐/化添撬围绕混砂车形成上游物料区。",
       "多目标优化：先修复碰撞、越界和禁布区占用，再用模拟退火式扰动与局部微调在安全、管线、道路和流程之间寻优。",
       `评分画像：采用“${SCORE_PROFILES[params.scoreProfile].label}”权重，但硬约束风险优先于综合分排序。`,
@@ -591,9 +613,46 @@ function calculateMoveGuidance(device: Device, candidate: LayoutCandidate): Poin
     }
   }
 
+  const terrainVector = calculateTerrainGuidance(device, candidate.params);
+  if (terrainVector) vectors.push(terrainVector);
+
   return vectors.length
     ? normalizeVector({ x: vectors.reduce((sum, vector) => sum + vector.x, 0), y: vectors.reduce((sum, vector) => sum + vector.y, 0) }, 1)
     : { x: 0, y: 0 };
+}
+
+function calculateTerrainGuidance(device: Device, params: LayoutParams): Point | null {
+  const c = center(device);
+  const profile = params.terrainProfile;
+  if (profile === "flat") return null;
+
+  if (profile === "slope") {
+    if (["wellhead", "manifold", "fracPump", "controlCabin", "generator"].includes(device.type)) {
+      return normalizeVector({ x: params.fieldWidth * 0.52 - c.x, y: params.fieldHeight * 0.62 - c.y }, 0.32);
+    }
+    return normalizeVector({ x: params.fieldWidth * 0.3 - c.x, y: params.fieldHeight * 0.44 - c.y }, 0.18);
+  }
+
+  if (profile === "valley") {
+    const awayFromDrainage = c.x < params.fieldWidth / 2 ? -1 : 1;
+    if (["wellhead", "manifold", "fracPump"].includes(device.type)) return { x: awayFromDrainage * 0.52, y: 0 };
+    return { x: awayFromDrainage * 0.24, y: 0 };
+  }
+
+  if (profile === "ridge") {
+    if (["wellhead", "manifold"].includes(device.type)) return normalizeVector({ x: params.fieldWidth * 0.52 - c.x, y: params.fieldHeight * 0.5 - c.y }, 0.45);
+    if (["sandTank", "waterTank", "additiveSkid"].includes(device.type)) return normalizeVector({ x: params.fieldWidth * 0.26 - c.x, y: params.fieldHeight * 0.5 - c.y }, 0.22);
+  }
+
+  if (profile === "waterSensitive") {
+    const sensitive = { x: params.fieldWidth * 0.22, y: params.fieldHeight * 0.72 };
+    if (["waterTank", "additiveSkid", "blender"].includes(device.type)) {
+      return normalizeVector({ x: c.x - sensitive.x, y: c.y - sensitive.y }, 0.58);
+    }
+    return normalizeVector({ x: c.x - sensitive.x, y: c.y - sensitive.y }, 0.18);
+  }
+
+  return null;
 }
 
 function repairLayout(devices: Device[], params: LayoutParams, zones: ForbiddenZone[], rng: () => number): Device[] {
@@ -658,6 +717,7 @@ function evaluateCandidate(candidate: LayoutCandidate): LayoutCandidate {
   let processPenalty = 0;
   let roadPenalty = 0;
   let pipeCrossPenalty = 0;
+  let terrainPenalty = 0;
 
   for (const device of devices) {
     if (!containsRect(boundary, device) || !insideShape(device, candidate.params)) {
@@ -770,6 +830,10 @@ function evaluateCandidate(candidate: LayoutCandidate): LayoutCandidate {
     }
   }
 
+  const terrainReview = calculateTerrainAdaptation(candidate);
+  terrainPenalty = terrainReview.penalty;
+  violations.push(...terrainReview.violations);
+
   const pipeLength = calculatePipelineLength(devices);
   const equipmentArea = devices.reduce((sum, device) => sum + device.width * device.height, 0);
   const fieldArea = candidate.params.fieldWidth * candidate.params.fieldHeight;
@@ -783,7 +847,8 @@ function evaluateCandidate(candidate: LayoutCandidate): LayoutCandidate {
   const pipeTarget = candidate.params.fieldWidth * 1.9 + candidate.params.fieldHeight * 1.2 + devices.length * 8;
   const pipelineScore = clamp01(1 - Math.max(pipeLength - pipeTarget, 0) / pipeTarget);
   const processOrderScore = calculateProcessOrderScore(devices);
-  const processRationality = clamp01(0.42 * processOrderScore + 0.28 * pipelineScore + 0.2 * roadAccessibility + 0.1 * forbiddenAvoidance - processPenalty * 0.04);
+  const terrainAdaptability = clamp01(1 - terrainPenalty / Math.max(devices.length * 0.42, 1));
+  const processRationality = clamp01(0.38 * processOrderScore + 0.26 * pipelineScore + 0.18 * roadAccessibility + 0.08 * forbiddenAvoidance + 0.1 * terrainAdaptability - processPenalty * 0.04);
 
   const objectives: ObjectiveSnapshot = {
     safety: safetyCompliance,
@@ -793,6 +858,7 @@ function evaluateCandidate(candidate: LayoutCandidate): LayoutCandidate {
     road: roadAccessibility,
     process: processRationality,
     utilization: utilizationScore,
+    terrain: terrainAdaptability,
   };
   const profile = SCORE_PROFILES[candidate.params.scoreProfile] ?? SCORE_PROFILES.balanced;
   const details = (Object.keys(profile.weights) as ScoreKey[]).map((key) => ({
@@ -821,6 +887,7 @@ function evaluateCandidate(candidate: LayoutCandidate): LayoutCandidate {
       pipelineLength: pipeLength,
       pipelineScore,
       processRationality,
+      terrainAdaptability,
       details,
     },
   };
@@ -873,6 +940,88 @@ function createRoads(params: LayoutParams): Road[] {
   return roads;
 }
 
+function calculateTerrainAdaptation(candidate: LayoutCandidate): { penalty: number; violations: Violation[] } {
+  const params = candidate.params;
+  const profile = params.terrainProfile;
+  const range = getTerrainElevationRange(params);
+  const violations: Violation[] = [];
+  let penalty = 0;
+
+  for (const device of candidate.devices) {
+    const c = center(device);
+    const intensity = getTerrainIntensity(c.x, c.y, params);
+    const highPressureCore = ["wellhead", "manifold", "fracPump"].includes(device.type);
+    const liquidDevice = ["waterTank", "additiveSkid", "blender"].includes(device.type);
+
+    if ((profile === "slope" || profile === "waterSensitive") && highPressureCore && intensity < 0.28) {
+      penalty += 0.9;
+      violations.push({
+        id: `terrain-low-core-${device.id}`,
+        ruleId: "R-TERRAIN-LOWLAND",
+        type: "terrain",
+        severity: "medium",
+        message: `${device.name} 位于低洼侧，当前环境建议高压核心避开低洼积水区域。`,
+        deviceIds: [device.id],
+        evidence: "坡地/水敏环境下优先将井口、管汇和泵车布置在较稳定、排水条件更好的位置。",
+      });
+    }
+
+    if (profile === "waterSensitive" && liquidDevice) {
+      const sensitiveDistance = pointDistance(c, { x: params.fieldWidth * 0.22, y: params.fieldHeight * 0.72 });
+      if (sensitiveDistance < Math.min(params.fieldWidth, params.fieldHeight) * 0.28) {
+        penalty += 1.05;
+        violations.push({
+          id: `terrain-water-sensitive-${device.id}`,
+          ruleId: "R-TERRAIN-WATER-SENSITIVE",
+          type: "terrain",
+          severity: "medium",
+          message: `${device.name} 靠近低洼水敏区，建议外移以降低液体泄漏和汇流风险。`,
+          deviceIds: [device.id],
+          evidence: "水敏/环保场景强化水罐、化添撬、混砂车与低洼敏感区的距离。",
+        });
+      }
+    }
+
+    if (profile === "ridge" && highPressureCore && intensity < 0.5) {
+      penalty += 0.7;
+      violations.push({
+        id: `terrain-ridge-core-${device.id}`,
+        ruleId: "R-TERRAIN-RIDGE-CORE",
+        type: "terrain",
+        severity: "low",
+        message: `${device.name} 未充分利用中部高台，建议核心设备靠近稳定台脊。`,
+        deviceIds: [device.id],
+        evidence: "台脊地势优先将井口和管汇放在相对稳定高台，物料与保障设备布置在外缘。",
+      });
+    }
+  }
+
+  if (profile === "valley") {
+    const drainageCenter = params.fieldWidth * 0.5;
+    const nearDrainage = candidate.devices.filter((device) => Math.abs(center(device).x - drainageCenter) < params.fieldWidth * 0.08);
+    nearDrainage.forEach((device) => {
+      penalty += 0.85;
+      violations.push({
+        id: `terrain-valley-drainage-${device.id}`,
+        ruleId: "R-TERRAIN-DRAINAGE",
+        type: "terrain",
+        severity: "medium",
+        message: `${device.name} 靠近沟谷汇水廊道，建议避开中部低洼带。`,
+        deviceIds: [device.id],
+        evidence: "沟谷地势应保留中部排水和软弱地基避让带，设备宜分列在两侧台地。",
+      });
+    });
+  }
+
+  const elevationSpread = candidate.devices.reduce((sum, device) => {
+    const c = center(device);
+    return sum + Math.abs(getTerrainElevation(c.x, c.y, params) - (range.min + range.max) / 2) / Math.max(range.max - range.min, 1);
+  }, 0);
+  if (profile !== "flat") penalty += elevationSpread * 0.04;
+
+  return { penalty, violations };
+}
+
 function createForbiddenZones(params: LayoutParams): ForbiddenZone[] {
   if (!params.enableForbiddenZone) return [];
   const zones: ForbiddenZone[] = [
@@ -906,6 +1055,39 @@ function createForbiddenZones(params: LayoutParams): ForbiddenZone[] {
       y: 0,
       width: 22,
       height: 22,
+    });
+  }
+  if (params.terrainProfile === "valley") {
+    zones.push({
+      id: "forbid-drainage",
+      name: "沟谷汇水廊道",
+      reason: "沟谷地势中部低洼，需保留排水与软弱地基避让带。",
+      x: params.fieldWidth * 0.46,
+      y: 6,
+      width: params.fieldWidth * 0.08,
+      height: params.fieldHeight - 12,
+    });
+  }
+  if (params.terrainProfile === "waterSensitive") {
+    zones.push({
+      id: "forbid-water-sensitive",
+      name: "低洼水敏保护区",
+      reason: "水敏/环保场景下，液体设备和管线应远离低洼敏感区域。",
+      x: params.fieldWidth * 0.06,
+      y: params.fieldHeight * 0.58,
+      width: params.fieldWidth * 0.3,
+      height: params.fieldHeight * 0.28,
+    });
+  }
+  if (params.terrainProfile === "ridge") {
+    zones.push({
+      id: "forbid-ridge-edge",
+      name: "台缘退让区",
+      reason: "台脊地势边缘需保留边坡安全退让，核心设备优先上台。",
+      x: 0,
+      y: params.fieldHeight * 0.68,
+      width: params.fieldWidth,
+      height: params.fieldHeight * 0.1,
     });
   }
   return zones;
@@ -999,6 +1181,7 @@ function explainScore(
     if (key === "road") return violation.type === "road";
     if (key === "process") return violation.type === "process";
     if (key === "pipeline") return violation.type === "pipeline";
+    if (key === "terrain") return violation.type === "terrain";
     return false;
   });
   if (key === "pipeline") return `管线总长 ${pipeLength.toFixed(1)}m，越短、交叉越少得分越高。`;
@@ -1008,6 +1191,10 @@ function explainScore(
   if (key === "forbidden") return relevant.length ? `存在 ${relevant.length} 项禁布区或管线穿越问题。` : "设备和管线未占用禁布区。";
   if (key === "process") return relevant.length ? `存在 ${relevant.length} 项流程距离或顺序偏差。` : "物料、混砂、增压、管汇、井口的流程方向清晰。";
   if (key === "safety") return relevant.length ? `存在 ${relevant.length} 项安全距离/边界风险。` : "当前未发现安全缓冲区不足。";
+  if (key === "terrain") {
+    const profile = TERRAIN_PROFILES[candidate.params.terrainProfile];
+    return relevant.length ? `${profile.label}下存在 ${relevant.length} 项地势适配提示。` : `${profile.label}下设备避让和核心区位置符合当前环境策略。`;
+  }
   return `子项得分 ${(score * 100).toFixed(1)}。`;
 }
 
@@ -1025,6 +1212,7 @@ function createEvidenceExplanation(candidate: LayoutCandidate): string[] {
   return [
     ...base,
     `结果复核：硬约束风险 ${hardCount} 项，中风险 ${mediumCount} 项，碰撞率 ${(candidate.scores.collisionRate * 100).toFixed(1)}%。`,
+    `环境依据：${TERRAIN_PROFILES[candidate.params.terrainProfile].label}下按“${TERRAIN_PROFILES[candidate.params.terrainProfile].optimizationFocus}”调整模板、避让区和搜索方向，环境适配 ${(candidate.scores.terrainAdaptability * 100).toFixed(1)}%。`,
     `排序依据：综合分 ${candidate.scores.total.toFixed(1)}，主要贡献来自 ${topSignals || "各项指标均衡"}；管线总长 ${candidate.scores.pipelineLength.toFixed(1)}m，道路通达率 ${(candidate.scores.roadAccessibility * 100).toFixed(1)}%。`,
   ];
 }
@@ -1227,6 +1415,7 @@ function emptyScores(profileId: ScoreProfile): Scores {
     pipelineLength: 0,
     pipelineScore: 0,
     processRationality: 0,
+    terrainAdaptability: 0,
     details: (Object.keys(profile.weights) as ScoreKey[]).map((key) => ({
       key,
       label: SCORE_LABELS[key],

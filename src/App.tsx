@@ -25,9 +25,11 @@ import {
   RULE_MATRIX,
   SCORE_PROFILES,
   SIMULATED_SAMPLE_CASES,
+  TERRAIN_PROFILES,
   type SampleCase,
   type FracScale,
   type ScoreProfile,
+  type TerrainProfile,
   type YardShape,
 } from "./data/equipment";
 import {
@@ -60,6 +62,11 @@ const shapeOptions: Array<{ value: YardShape; label: string }> = [
   { value: "trapezoid", label: "梯形近似" },
   { value: "notched", label: "缺口边界" },
 ];
+
+const terrainOptions = (Object.keys(TERRAIN_PROFILES) as TerrainProfile[]).map((value) => ({
+  value,
+  label: TERRAIN_PROFILES[value].label,
+}));
 
 const profileOptions = (Object.keys(SCORE_PROFILES) as ScoreProfile[]).map((value) => ({
   value,
@@ -223,6 +230,12 @@ function App() {
           <NumberField label="井场长度 m" min={80} max={220} value={params.fieldWidth} onChange={(fieldWidth) => updateParam("fieldWidth", fieldWidth)} />
           <NumberField label="井场宽度 m" min={60} max={160} value={params.fieldHeight} onChange={(fieldHeight) => updateParam("fieldHeight", fieldHeight)} />
           <SelectField label="地形边界" value={params.shape} options={shapeOptions} onChange={(shape) => updateParam("shape", shape)} />
+          <SelectField
+            label="环境地势"
+            value={params.terrainProfile}
+            options={terrainOptions}
+            onChange={(terrainProfile) => updateParam("terrainProfile", terrainProfile)}
+          />
           <SelectField label="压裂规模" value={params.scale} options={scaleOptions} onChange={(scale) => updateParam("scale", scale)} />
           <SelectField
             label="评分偏向"
@@ -296,7 +309,7 @@ function App() {
             <button key={sample.id} className="sample-button" onClick={() => loadSampleCase(sample)}>
               <strong>{sample.name.replace("抽象案例 ", "案例 ")}</strong>
               <span>
-                {sample.boundary.width}m x {sample.boundary.height}m / {scaleText(sample.scale)} / {sample.ruleTags.slice(0, 2).join("、")}
+                {sample.boundary.width}m x {sample.boundary.height}m / {TERRAIN_PROFILES[sample.terrainProfile].label} / {sample.ruleTags.slice(0, 2).join("、")}
               </span>
             </button>
           ))}
@@ -325,7 +338,8 @@ function App() {
           <div>
             <strong>井场方案优化工作台</strong>
             <span>
-              {active.templateName} / {active.params.fieldWidth}m x {active.params.fieldHeight}m / {SCORE_PROFILES[active.params.scoreProfile].label}
+              {active.templateName} / {active.params.fieldWidth}m x {active.params.fieldHeight}m / {TERRAIN_PROFILES[active.params.terrainProfile].label} /{" "}
+              {SCORE_PROFILES[active.params.scoreProfile].label}
             </span>
           </div>
           <div className={`operation-state ${paramsDirty ? "dirty" : ""}`}>
@@ -364,7 +378,7 @@ function App() {
           <StatusTile icon={<ShieldCheck size={18} />} label="安全合规" value={toPercent(active.scores.safetyCompliance)} tone="green" />
           <StatusTile icon={<Network size={18} />} label="管线评分" value={toPercent(active.scores.pipelineScore)} tone="cyan" />
           <StatusTile icon={<Route size={18} />} label="道路通达" value={toPercent(active.scores.roadAccessibility)} tone="amber" />
-          <StatusTile icon={<Boxes size={18} />} label="设备数量" value={`${active.devices.length} 台套`} tone="steel" />
+          <StatusTile icon={<Boxes size={18} />} label="环境适配" value={toPercent(active.scores.terrainAdaptability)} tone="steel" />
         </div>
 
         <div className="canvas-wrap">
@@ -432,6 +446,7 @@ function App() {
           <Metric label="碰撞率" value={toPercent(active.scores.collisionRate)} danger={active.scores.collisionRate > 0} />
           <Metric label="管线总长" value={`${active.scores.pipelineLength.toFixed(1)} m`} />
           <Metric label="流程合理性" value={toPercent(active.scores.processRationality)} />
+          <Metric label="环境适配" value={toPercent(active.scores.terrainAdaptability)} />
         </section>
 
         <section className="panel-section score-details">
@@ -527,7 +542,8 @@ function IterationSummary({ result }: { result: IterativeOptimizationResult }) {
       </div>
       <small>
         {result.rounds} 轮 / {last?.templateName ?? result.best.templateName} / 安全 {toPercent(last?.safetyCompliance ?? result.best.scores.safetyCompliance)} / 流程{" "}
-        {toPercent(last?.processRationality ?? result.best.scores.processRationality)} / {last?.warningCount ?? result.best.violations.length} 项告警
+        {toPercent(last?.processRationality ?? result.best.scores.processRationality)} / 环境{" "}
+        {toPercent(last?.terrainAdaptability ?? result.best.scores.terrainAdaptability)} / {last?.warningCount ?? result.best.violations.length} 项告警
       </small>
     </div>
   );
@@ -913,6 +929,7 @@ function createExportPayload(candidate: LayoutCandidate, iterationResult: Iterat
           safetyCompliance: Number(item.safetyCompliance.toFixed(4)),
           roadAccessibility: Number(item.roadAccessibility.toFixed(4)),
           processRationality: Number(item.processRationality.toFixed(4)),
+          terrainAdaptability: Number(item.terrainAdaptability.toFixed(4)),
           templateName: item.templateName,
         })),
       }
@@ -923,6 +940,12 @@ function createExportPayload(candidate: LayoutCandidate, iterationResult: Iterat
     name: candidate.name,
     template: { id: candidate.templateId, name: candidate.templateName },
     params: candidate.params,
+    environmentStrategy: {
+      label: TERRAIN_PROFILES[candidate.params.terrainProfile].label,
+      description: TERRAIN_PROFILES[candidate.params.terrainProfile].description,
+      optimizationFocus: TERRAIN_PROFILES[candidate.params.terrainProfile].optimizationFocus,
+      terrainAdaptability: candidate.scores.terrainAdaptability,
+    },
     devices: candidate.devices.map((device) => ({
       id: device.id,
       name: device.name,
@@ -969,6 +992,7 @@ function createReportSummary(candidate: LayoutCandidate): string {
     "## 输入参数",
     `- 井场尺寸：${candidate.params.fieldWidth}m x ${candidate.params.fieldHeight}m`,
     `- 地形边界：${candidate.params.shape}`,
+    `- 环境地势：${TERRAIN_PROFILES[candidate.params.terrainProfile].label}（${TERRAIN_PROFILES[candidate.params.terrainProfile].optimizationFocus}）`,
     `- 压裂规模：${scaleText(candidate.params.scale)}`,
     `- 评分画像：${SCORE_PROFILES[candidate.params.scoreProfile].label}`,
     `- 设备构成：${countText}`,
@@ -981,6 +1005,7 @@ function createReportSummary(candidate: LayoutCandidate): string {
     `- 安全合规率：${toPercent(candidate.scores.safetyCompliance)}`,
     `- 碰撞率：${toPercent(candidate.scores.collisionRate)}`,
     `- 道路通达性：${toPercent(candidate.scores.roadAccessibility)}`,
+    `- 环境适配性：${toPercent(candidate.scores.terrainAdaptability)}`,
     `- 空间利用率：${toPercent(candidate.scores.spaceUtilization)}`,
     `- 管线总长：${candidate.scores.pipelineLength.toFixed(1)}m`,
     `- 告警数量：${candidate.violations.length}`,

@@ -11,6 +11,7 @@ export type DeviceType =
   | "fireZone";
 
 export type YardShape = "rectangle" | "trapezoid" | "notched";
+export type TerrainProfile = "flat" | "slope" | "valley" | "ridge" | "waterSensitive";
 export type FracScale = "small" | "medium" | "large";
 export type TemplateId = "compactRing" | "linearFlow" | "dualLane";
 export type ScoreProfile = "balanced" | "safety" | "efficiency" | "cost" | "convenience" | "compact";
@@ -21,7 +22,8 @@ export type ScoreKey =
   | "pipeline"
   | "road"
   | "process"
-  | "utilization";
+  | "utilization"
+  | "terrain";
 
 export interface EquipmentSpec {
   type: DeviceType;
@@ -50,12 +52,14 @@ export interface SampleCase {
   id: string;
   name: string;
   boundary: { width: number; height: number; shape: YardShape };
+  terrainProfile: TerrainProfile;
   scale: FracScale;
   templateId: TemplateId;
   params: {
     fieldWidth: number;
     fieldHeight: number;
     shape: YardShape;
+    terrainProfile: TerrainProfile;
     scale: FracScale;
     fracPumpCount: number;
     sandTankCount: number;
@@ -77,6 +81,34 @@ export interface RuleMatrixItem {
   evidence: string;
   confidence: "高" | "中" | "低";
 }
+
+export const TERRAIN_PROFILES: Record<TerrainProfile, { label: string; description: string; optimizationFocus: string }> = {
+  flat: {
+    label: "平整平台",
+    description: "场地高差小，优先压缩占地和管线长度。",
+    optimizationFocus: "紧凑布置、管线短、道路环通",
+  },
+  slope: {
+    label: "单向坡地",
+    description: "场地沿南北向抬升，高压核心区避开低洼侧。",
+    optimizationFocus: "沿等高线布置、低洼侧避让、排水通道保留",
+  },
+  valley: {
+    label: "沟谷地势",
+    description: "中部低洼，两侧抬升，需避开汇水沟和软弱带。",
+    optimizationFocus: "设备分列、中心排水廊道避让、双通道检修",
+  },
+  ridge: {
+    label: "台脊地势",
+    description: "中部高、边缘低，井口和管汇优先布置在稳定高台。",
+    optimizationFocus: "核心上台、物料外缘、边坡安全退让",
+  },
+  waterSensitive: {
+    label: "水敏/环保区",
+    description: "低洼侧和敏感边界需要更强避让，减少液体设备泄漏影响。",
+    optimizationFocus: "水罐/化添远离敏感区、管线少穿越、道路应急可达",
+  },
+};
 
 export const EQUIPMENT_SPECS: Record<DeviceType, EquipmentSpec> = {
   wellhead: {
@@ -241,27 +273,27 @@ export const CASE_TEMPLATES: CaseTemplate[] = [
 export const SCORE_PROFILES: Record<ScoreProfile, { label: string; weights: Record<ScoreKey, number> }> = {
   balanced: {
     label: "综合均衡",
-    weights: { safety: 0.24, collision: 0.18, forbidden: 0.08, pipeline: 0.16, road: 0.12, process: 0.14, utilization: 0.08 },
+    weights: { safety: 0.21, collision: 0.16, forbidden: 0.08, pipeline: 0.15, road: 0.11, process: 0.13, utilization: 0.07, terrain: 0.09 },
   },
   safety: {
     label: "安全优先",
-    weights: { safety: 0.34, collision: 0.24, forbidden: 0.12, pipeline: 0.08, road: 0.1, process: 0.08, utilization: 0.04 },
+    weights: { safety: 0.31, collision: 0.22, forbidden: 0.11, pipeline: 0.07, road: 0.09, process: 0.07, utilization: 0.03, terrain: 0.1 },
   },
   efficiency: {
     label: "效率优先",
-    weights: { safety: 0.16, collision: 0.1, forbidden: 0.03, pipeline: 0.24, road: 0.18, process: 0.22, utilization: 0.07 },
+    weights: { safety: 0.14, collision: 0.09, forbidden: 0.03, pipeline: 0.23, road: 0.17, process: 0.2, utilization: 0.06, terrain: 0.08 },
   },
   cost: {
     label: "成本优先",
-    weights: { safety: 0.13, collision: 0.08, forbidden: 0.04, pipeline: 0.28, road: 0.15, process: 0.12, utilization: 0.2 },
+    weights: { safety: 0.12, collision: 0.07, forbidden: 0.04, pipeline: 0.26, road: 0.14, process: 0.11, utilization: 0.18, terrain: 0.08 },
   },
   convenience: {
     label: "施工便捷",
-    weights: { safety: 0.17, collision: 0.1, forbidden: 0.04, pipeline: 0.13, road: 0.28, process: 0.22, utilization: 0.06 },
+    weights: { safety: 0.15, collision: 0.09, forbidden: 0.04, pipeline: 0.12, road: 0.26, process: 0.2, utilization: 0.05, terrain: 0.09 },
   },
   compact: {
     label: "占地最小",
-    weights: { safety: 0.18, collision: 0.14, forbidden: 0.04, pipeline: 0.18, road: 0.06, process: 0.12, utilization: 0.28 },
+    weights: { safety: 0.16, collision: 0.13, forbidden: 0.04, pipeline: 0.17, road: 0.05, process: 0.11, utilization: 0.25, terrain: 0.09 },
   },
 };
 
@@ -271,6 +303,7 @@ export const PUBLIC_RULE_NOTES = [
   "仪表车、电源和人员活动区应布置在高压核心区外侧，并保持道路可达，减少人员进入高压管线密集区。",
   "车辆进出、消防和应急疏散优先形成环形或双通道组织，避免大型车辆倒车、交叉和管线压占主通道。",
   "本原型内置的安全距离数值是可配置工程默认值；正式施工设计必须由项目标准、企业制度和 HSE 审查覆盖。",
+  "环境地势会改变优化倾向：坡地沿等高线布置，沟谷避开汇水廊道，水敏场景强化液体设备和管线避让。",
 ];
 
 export const RULE_MATRIX: RuleMatrixItem[] = [
@@ -337,12 +370,14 @@ export const SIMULATED_SAMPLE_CASES: SampleCase[] = [
     id: "case-120x90-medium",
     name: "抽象案例 A：中等规模矩形井场",
     boundary: { width: 120, height: 90, shape: "rectangle" },
+    terrainProfile: "flat",
     scale: "medium",
     templateId: "compactRing",
     params: {
       fieldWidth: 120,
       fieldHeight: 90,
       shape: "rectangle",
+      terrainProfile: "flat",
       scale: "medium",
       fracPumpCount: 8,
       sandTankCount: 4,
@@ -359,12 +394,14 @@ export const SIMULATED_SAMPLE_CASES: SampleCase[] = [
     id: "case-160x90-large",
     name: "抽象案例 B：大规模长条井场",
     boundary: { width: 160, height: 90, shape: "rectangle" },
+    terrainProfile: "slope",
     scale: "large",
     templateId: "linearFlow",
     params: {
       fieldWidth: 160,
       fieldHeight: 90,
       shape: "rectangle",
+      terrainProfile: "slope",
       scale: "large",
       fracPumpCount: 12,
       sandTankCount: 6,
@@ -381,12 +418,14 @@ export const SIMULATED_SAMPLE_CASES: SampleCase[] = [
     id: "case-145x105-large",
     name: "抽象案例 C：带缺口边界大井场",
     boundary: { width: 145, height: 105, shape: "notched" },
+    terrainProfile: "valley",
     scale: "large",
     templateId: "dualLane",
     params: {
       fieldWidth: 145,
       fieldHeight: 105,
       shape: "notched",
+      terrainProfile: "valley",
       scale: "large",
       fracPumpCount: 10,
       sandTankCount: 5,

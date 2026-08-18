@@ -2,7 +2,15 @@ import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { EQUIPMENT_SPECS } from "../data/equipment";
-import { getBoundaryWorldPoints, getTerrainSceneLabel } from "../lib/fieldGeometry";
+import {
+  getBoundaryWorldPoints,
+  getTerrainColor,
+  getTerrainElevation,
+  getTerrainElevationRange,
+  getTerrainIntensity,
+  getTerrainSceneLabel,
+  isTerrainPointEnabled,
+} from "../lib/fieldGeometry";
 import type { Device, LayoutCandidate, LayoutParams, Rect as LayoutRect } from "../lib/layoutEngine";
 
 interface SceneLayers {
@@ -147,7 +155,7 @@ export function YardScene3D({ candidate, layers, selectedDeviceId, onSelectDevic
       />
       <div className="scene3d-hud">
         <strong>{terrainLabel}</strong>
-        <span>真实透视 / 轨道相机 / 点击设备选中</span>
+        <span>高程色带 / 等高线图 / 环境优化布置</span>
       </div>
     </div>
   );
@@ -223,6 +231,8 @@ function createTerrain(params: LayoutParams) {
   mesh.receiveShadow = true;
   mesh.castShadow = true;
   group.add(mesh);
+  group.add(createTerrainPatches(params));
+  group.add(createContourLines(params));
 
   const grid = new THREE.GridHelper(
     Math.max(params.fieldWidth, params.fieldHeight),
@@ -240,6 +250,96 @@ function createTerrain(params: LayoutParams) {
       points.push(worldToVector({ x, y, z: terrainZ(x, y, params) + 0.12 }, params));
     }
     if (points.length > 1) group.add(createLine(points, "#7dd3fc", 0.28));
+  }
+
+  return group;
+}
+
+function createTerrainPatches(params: LayoutParams) {
+  const group = new THREE.Group();
+  const columns = 30;
+  const rows = 22;
+  const cellWidth = params.fieldWidth / columns;
+  const cellHeight = params.fieldHeight / rows;
+
+  for (let row = 0; row < rows; row += 1) {
+    for (let column = 0; column < columns; column += 1) {
+      const rect = { x: column * cellWidth, y: row * cellHeight, width: cellWidth, height: cellHeight };
+      const centerX = rect.x + rect.width / 2;
+      const centerY = rect.y + rect.height / 2;
+      if (!terrainCellEnabled(centerX, centerY, params)) continue;
+      const corners = [
+        { x: rect.x, y: rect.y },
+        { x: rect.x + rect.width, y: rect.y },
+        { x: rect.x + rect.width, y: rect.y + rect.height },
+        { x: rect.x, y: rect.y + rect.height },
+      ];
+      if (corners.some((point) => !isTerrainPointEnabled(point.x, point.y, params))) continue;
+
+      const vertices = corners.flatMap((point) => {
+        const vector = worldToVector({ x: point.x, y: point.y, z: terrainZ(point.x, point.y, params) + 0.1 }, params);
+        return [vector.x, vector.y, vector.z];
+      });
+      const patch = new THREE.BufferGeometry();
+      patch.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+      patch.setIndex([0, 1, 2, 0, 2, 3]);
+      patch.computeVertexNormals();
+      const material = new THREE.MeshStandardMaterial({
+        color: getTerrainColor(getTerrainIntensity(centerX, centerY, params), params),
+        roughness: 0.9,
+        metalness: 0.03,
+        transparent: true,
+        opacity: 0.76,
+        side: THREE.DoubleSide,
+      });
+      const mesh = new THREE.Mesh(patch, material);
+      mesh.receiveShadow = true;
+      group.add(mesh);
+    }
+  }
+
+  return group;
+}
+
+function createContourLines(params: LayoutParams) {
+  const group = new THREE.Group();
+  const range = getTerrainElevationRange(params);
+  const levels = 8;
+  const columns = 46;
+  const rows = 34;
+  const stepX = params.fieldWidth / columns;
+  const stepY = params.fieldHeight / rows;
+
+  for (let index = 1; index < levels; index += 1) {
+    const level = range.min + ((range.max - range.min) * index) / levels;
+    const segments: THREE.Vector3[] = [];
+    for (let row = 0; row < rows; row += 1) {
+      for (let column = 0; column < columns; column += 1) {
+        const corners = [
+          contourPoint(column * stepX, row * stepY, params),
+          contourPoint((column + 1) * stepX, row * stepY, params),
+          contourPoint((column + 1) * stepX, (row + 1) * stepY, params),
+          contourPoint(column * stepX, (row + 1) * stepY, params),
+        ];
+        if (corners.some((point) => !point.enabled)) continue;
+        const hits = [
+          interpolateContour(corners[0], corners[1], level),
+          interpolateContour(corners[1], corners[2], level),
+          interpolateContour(corners[2], corners[3], level),
+          interpolateContour(corners[3], corners[0], level),
+        ].filter(Boolean) as Point3[];
+        if (hits.length === 2) segments.push(worldToVector({ ...hits[0], z: level + 0.42 }, params), worldToVector({ ...hits[1], z: level + 0.42 }, params));
+        if (hits.length === 4) {
+          segments.push(worldToVector({ ...hits[0], z: level + 0.42 }, params), worldToVector({ ...hits[1], z: level + 0.42 }, params));
+          segments.push(worldToVector({ ...hits[2], z: level + 0.42 }, params), worldToVector({ ...hits[3], z: level + 0.42 }, params));
+        }
+      }
+    }
+    if (segments.length) {
+      const geometry = new THREE.BufferGeometry().setFromPoints(segments);
+      const material = new THREE.LineBasicMaterial({ color: index % 2 === 0 ? "#fef3c7" : "#d9f99d", transparent: true, opacity: index % 2 === 0 ? 0.7 : 0.48 });
+      group.add(new THREE.LineSegments(geometry, material));
+    }
   }
 
   return group;
@@ -269,6 +369,24 @@ function createBoundaryLine(params: LayoutParams) {
   const boundary = getBoundaryWorldPoints(params).map(([x, y]) => worldToVector({ x, y, z: terrainZ(x, y, params) + 0.28 }, params));
   boundary.push(boundary[0].clone());
   return createLine(boundary, "#e0f2fe", 0.95);
+}
+
+function contourPoint(x: number, y: number, params: LayoutParams) {
+  return { x, y, z: terrainZ(x, y, params), enabled: isTerrainPointEnabled(x, y, params) };
+}
+
+function interpolateContour(a: Point3 & { enabled: boolean }, b: Point3 & { enabled: boolean }, level: number): Point3 | null {
+  const da = a.z - level;
+  const db = b.z - level;
+  if (da === 0) return { x: a.x, y: a.y, z: level };
+  if (db === 0) return { x: b.x, y: b.y, z: level };
+  if ((da > 0 && db > 0) || (da < 0 && db < 0)) return null;
+  const ratio = (level - a.z) / (b.z - a.z);
+  return {
+    x: a.x + (b.x - a.x) * ratio,
+    y: a.y + (b.y - a.y) * ratio,
+    z: level,
+  };
 }
 
 function createRectLayer(rect: LayoutRect, params: LayoutParams, color: string, opacity: number, lift: number) {
@@ -575,10 +693,7 @@ function worldToVector(point: Point3, params: LayoutParams) {
 }
 
 function terrainZ(x: number, y: number, params: LayoutParams) {
-  const ripple = Math.sin((y / params.fieldHeight) * Math.PI * 2) * 0.28 + Math.cos((x / params.fieldWidth) * Math.PI * 4) * 0.16;
-  if (params.shape === "trapezoid") return (y / params.fieldHeight) * 7.5 + ripple;
-  if (params.shape === "notched") return lowMound(x, y, params) * 1.2;
-  return lowMound(x, y, params) * 0.7;
+  return getTerrainElevation(x, y, params);
 }
 
 function lowMound(x: number, y: number, params: LayoutParams) {
@@ -588,13 +703,7 @@ function lowMound(x: number, y: number, params: LayoutParams) {
 }
 
 function terrainCellEnabled(x: number, y: number, params: LayoutParams) {
-  if (params.shape === "notched" && x > params.fieldWidth - 30 && y < 24) return false;
-  if (params.shape === "trapezoid") {
-    const leftEdge = 12 * (1 - y / params.fieldHeight);
-    const rightEdge = params.fieldWidth - 8 * (y / params.fieldHeight);
-    return x >= leftEdge && x <= rightEdge;
-  }
-  return true;
+  return isTerrainPointEnabled(x, y, params);
 }
 
 function findDeviceId(object: THREE.Object3D): string | null {
