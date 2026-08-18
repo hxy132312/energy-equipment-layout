@@ -161,7 +161,7 @@ function rebuildScene(root: THREE.Group, candidate: LayoutCandidate, layers: Sce
   root.add(createBoundaryLine(candidate.params));
   root.add(createTerrainLegend(terrainLabel, candidate.params));
 
-  if (layers.roads) candidate.roads.forEach((road) => root.add(createRectLayer(road, candidate.params, "#334155", 0.86, 0.04)));
+  if (layers.roads) candidate.roads.forEach((road) => root.add(createRoadLayer(road, candidate.params)));
   if (layers.forbidden) candidate.forbiddenZones.forEach((zone) => root.add(createRectLayer(zone, candidate.params, "#8f1d24", 0.48, 0.12)));
   if (layers.heatmap) candidate.heatZones.forEach((zone) => root.add(createRectLayer(zone, candidate.params, "#e11d48", 0.26 + zone.intensity * 0.24, 0.18)));
   if (layers.safety) candidate.devices.forEach((device) => root.add(createSafetyDisk(device, candidate, device.id === selectedDeviceId)));
@@ -211,7 +211,7 @@ function createTerrain(params: LayoutParams) {
   });
   shape.closePath();
 
-  const geometry = new THREE.ShapeGeometry(shape);
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth: 1.8, bevelEnabled: false });
   geometry.rotateX(-Math.PI / 2);
   const material = new THREE.MeshStandardMaterial({
     color: params.shape === "trapezoid" ? "#173829" : params.shape === "notched" ? "#17313a" : "#102d27",
@@ -219,7 +219,9 @@ function createTerrain(params: LayoutParams) {
     metalness: 0.04,
   });
   const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.y = -1.8;
   mesh.receiveShadow = true;
+  mesh.castShadow = true;
   group.add(mesh);
 
   const grid = new THREE.GridHelper(
@@ -240,6 +242,26 @@ function createTerrain(params: LayoutParams) {
     if (points.length > 1) group.add(createLine(points, "#7dd3fc", 0.28));
   }
 
+  return group;
+}
+
+function createRoadLayer(road: LayoutRect, params: LayoutParams) {
+  const group = createRectLayer(road, params, "#334155", 0.88, 0.08);
+  const horizontal = road.width >= road.height;
+  const stripeCount = Math.max(1, Math.floor((horizontal ? road.width : road.height) / 22));
+  for (let index = 0; index < stripeCount; index += 1) {
+    const ratio = (index + 0.5) / stripeCount;
+    const stripe = horizontal
+      ? [
+          worldToVector({ x: road.x + road.width * ratio - 3.2, y: road.y + road.height / 2, z: terrainZ(road.x + road.width * ratio, road.y + road.height / 2, params) + 0.22 }, params),
+          worldToVector({ x: road.x + road.width * ratio + 3.2, y: road.y + road.height / 2, z: terrainZ(road.x + road.width * ratio, road.y + road.height / 2, params) + 0.22 }, params),
+        ]
+      : [
+          worldToVector({ x: road.x + road.width / 2, y: road.y + road.height * ratio - 3.2, z: terrainZ(road.x + road.width / 2, road.y + road.height * ratio, params) + 0.22 }, params),
+          worldToVector({ x: road.x + road.width / 2, y: road.y + road.height * ratio + 3.2, z: terrainZ(road.x + road.width / 2, road.y + road.height * ratio, params) + 0.22 }, params),
+        ];
+    group.add(createLine(stripe, "#cbd5e1", 0.58));
+  }
   return group;
 }
 
@@ -305,25 +327,40 @@ function createDeviceModel(device: Device, params: LayoutParams, selected: boole
   if (device.type === "sandTank" || device.type === "waterTank") {
     addCylinder(group, Math.min(device.width, device.height) * 0.42, DEVICE_HEIGHT[device.type], material);
     addBox(group, device.width * 0.85, 0.35, device.height * 0.85, darkMaterial, 0.18);
+    addCylinder(group, Math.min(device.width, device.height) * 0.3, 0.34, darkMaterial, DEVICE_HEIGHT[device.type] + 0.18);
+    addBox(group, 0.34, DEVICE_HEIGHT[device.type] * 0.72, 0.24, accentMaterial, DEVICE_HEIGHT[device.type] * 0.5, device.width * 0.43, -device.height * 0.12);
   } else if (device.type === "fracPump") {
     addBox(group, device.width, DEVICE_HEIGHT.fracPump * 0.54, device.height, material, DEVICE_HEIGHT.fracPump * 0.28);
     addBox(group, device.width * 0.26, DEVICE_HEIGHT.fracPump * 0.78, device.height * 0.78, darkMaterial, DEVICE_HEIGHT.fracPump * 0.68, -device.width * 0.28);
     addConnectorRow(group, device.width, device.height, accentMaterial);
+    addWheelSet(group, device.width, device.height, darkMaterial);
+    addHorizontalCylinder(group, device.width * 0.62, 0.22, darkMaterial, 1.18, device.width * 0.1, device.height * 0.42, "x");
   } else if (device.type === "wellhead") {
     addCylinder(group, device.width * 0.42, 1.2, material);
     addCylinder(group, device.width * 0.16, DEVICE_HEIGHT.wellhead, darkMaterial, DEVICE_HEIGHT.wellhead / 2);
     addBox(group, device.width * 0.75, 0.32, device.height * 0.16, accentMaterial, 1.2);
     addBox(group, device.width * 0.16, 0.32, device.height * 0.75, accentMaterial, 1.2);
+    addCylinder(group, device.width * 0.22, 0.5, accentMaterial, DEVICE_HEIGHT.wellhead + 0.25);
+    addValveWheel(group, DEVICE_HEIGHT.wellhead * 0.66, accentMaterial);
   } else if (device.type === "manifold") {
     addBox(group, device.width, DEVICE_HEIGHT.manifold * 0.46, device.height, material, DEVICE_HEIGHT.manifold * 0.24);
     addConnectorRow(group, device.width, device.height, accentMaterial);
     addBox(group, device.width * 0.92, 0.38, device.height * 0.18, darkMaterial, DEVICE_HEIGHT.manifold * 0.62);
+    [-0.3, 0, 0.3].forEach((ratio) => addHorizontalCylinder(group, device.width * 0.82, 0.26, accentMaterial, DEVICE_HEIGHT.manifold * 0.78, 0, device.height * ratio, "x"));
   } else if (device.type === "fireZone") {
     addBox(group, device.width, 0.32, device.height, new THREE.MeshStandardMaterial({ color: "#dc2626", transparent: true, opacity: 0.45 }), 0.18);
     addBox(group, device.width * 0.82, 1.8, device.height * 0.18, material, 1);
+    [-0.34, 0.34].forEach((ratio) => addCone(group, 0.9, 2.6, material, 1.3, device.width * ratio, device.height * 0.3));
   } else {
     addBox(group, device.width, DEVICE_HEIGHT[device.type], device.height, material, DEVICE_HEIGHT[device.type] / 2);
     addBox(group, device.width * 0.82, 0.28, device.height * 0.82, darkMaterial, DEVICE_HEIGHT[device.type] + 0.16);
+    if (device.type === "generator" || device.type === "controlCabin") {
+      addVentRows(group, device.width, device.height, DEVICE_HEIGHT[device.type], accentMaterial);
+      addWheelSet(group, device.width, device.height, darkMaterial);
+    }
+    if (device.type === "blender" || device.type === "additiveSkid") {
+      addHorizontalCylinder(group, device.width * 0.72, 0.28, accentMaterial, DEVICE_HEIGHT[device.type] * 0.68, 0, -device.height * 0.44, "x");
+    }
   }
 
   if (selected) {
@@ -364,9 +401,14 @@ function createPipelineGroup(candidate: LayoutCandidate) {
         roughness: 0.42,
         metalness: 0.18,
       });
+      const group = new THREE.Group();
       const pipe = new THREE.Mesh(geometry, material);
       pipe.castShadow = true;
-      return [pipe];
+      group.add(pipe);
+      route.slice(1, -1).forEach((point) => {
+        addPipeSupport(group, point, highPressure);
+      });
+      return [group];
     }),
   );
 }
@@ -431,6 +473,52 @@ function addCylinder(group: THREE.Group, radius: number, height: number, materia
   const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, height, 32), material);
   mesh.position.y = y;
   group.add(mesh);
+}
+
+function addHorizontalCylinder(group: THREE.Group, length: number, radius: number, material: THREE.Material, y: number, x: number, z: number, axis: "x" | "z") {
+  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, length, 20), material);
+  mesh.rotation[axis === "x" ? "z" : "x"] = Math.PI / 2;
+  mesh.position.set(x, y, z);
+  group.add(mesh);
+}
+
+function addCone(group: THREE.Group, radius: number, height: number, material: THREE.Material, y: number, x: number, z: number) {
+  const mesh = new THREE.Mesh(new THREE.ConeGeometry(radius, height, 24), material);
+  mesh.position.set(x, y, z);
+  group.add(mesh);
+}
+
+function addWheelSet(group: THREE.Group, width: number, depth: number, material: THREE.Material) {
+  [-0.34, 0.34].forEach((xRatio) => {
+    [-0.58, 0.58].forEach((zRatio) => {
+      const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.42, 20), material);
+      wheel.rotation.x = Math.PI / 2;
+      wheel.position.set(width * xRatio, 0.58, depth * zRatio);
+      group.add(wheel);
+    });
+  });
+}
+
+function addValveWheel(group: THREE.Group, y: number, material: THREE.Material) {
+  const wheel = new THREE.Mesh(new THREE.TorusGeometry(1.15, 0.08, 8, 28), material);
+  wheel.rotation.x = Math.PI / 2;
+  wheel.position.set(0, y, 0);
+  group.add(wheel);
+}
+
+function addVentRows(group: THREE.Group, width: number, depth: number, height: number, material: THREE.Material) {
+  [-0.24, 0, 0.24].forEach((offset) => {
+    addBox(group, width * 0.58, 0.08, 0.12, material, height * (0.46 + offset), 0, -depth / 2 - 0.04);
+  });
+}
+
+function addPipeSupport(group: THREE.Group, point: THREE.Vector3, highPressure: boolean) {
+  const material = new THREE.MeshStandardMaterial({ color: highPressure ? "#fecdd3" : "#cffafe", roughness: 0.6, metalness: 0.12 });
+  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, Math.max(point.y - 0.35, 0.6), 10), material);
+  post.position.set(point.x, Math.max(point.y / 2, 0.3), point.z);
+  const saddle = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.14, 0.42), material);
+  saddle.position.set(point.x, point.y - 0.32, point.z);
+  group.add(post, saddle);
 }
 
 function addConnectorRow(group: THREE.Group, width: number, depth: number, material: THREE.Material) {
